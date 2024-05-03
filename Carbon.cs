@@ -5,7 +5,7 @@ namespace lang;
 public class Carbon
 {
     public char Symbol = 'C';
-    public ConsoleColor Color = ConsoleColor.DarkGray;
+    public ConsoleColor Color = ConsoleColor.White;
     public int X { get; set; }
     public int Y { get; set; }
     public int VelocityX { get; set; }
@@ -26,8 +26,11 @@ public class Carbon
         int newY = Y + VelocityY;
 
         foreach (var carbon in Space.Carbons) 
-        { 
-            
+        {
+            if (newX == carbon.X && newY == carbon.Y) 
+            { 
+                
+            }
         }
 
         if (newX < 0)

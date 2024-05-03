@@ -2,7 +2,7 @@
 
 internal class Space
 {
-    private readonly static int CarbonMolecules = 100;
+    private readonly static int CarbonMolecules = 1;
     public readonly static List<Carbon> Carbons = new();
 
     private static bool isPaused = false;
@@ -20,6 +20,8 @@ internal class Space
             {
                 foreach (var carbon in Carbons)
                     carbon.Move();
+
+                Thread.Sleep(10);
             }
 
             if (!isPaused)
@@ -41,11 +43,6 @@ internal class Space
 
             Carbon carbon = new(x, y, velocityX, velocityY);
             Carbons.Add(carbon);
-
-            Console.SetCursorPosition(x, y);
-
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(carbon.Symbol);
         }
     }
 
