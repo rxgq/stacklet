@@ -2,7 +2,7 @@
 
 public class Carbon
 {
-    public char Symbol = 'C';
+    public char Symbol = '.';
     public ConsoleColor Color = ConsoleColor.White;
     public int X { get; set; }
     public int Y { get; set; }
@@ -25,10 +25,11 @@ public class Carbon
 
         foreach (var carbon in Space.Carbons)
         {
-            if (this != carbon && newX == carbon.X && newY == carbon.Y)
+            if (carbon != this && newX == carbon.X && newY == carbon.Y)
             {
                 VelocityX *= -1;
                 VelocityY *= -1;
+
                 break;
             }
         }
@@ -55,16 +56,17 @@ public class Carbon
             VelocityY *= -1;
         }
 
-        if (X >= 0 && X < Console.WindowWidth && Y >= 0 && Y < Console.WindowHeight)
+        if (X >= 0 && X < Console.WindowWidth && 
+            Y >= 0 && Y < Console.WindowHeight)
         {
             X = newX;
             Y = newY;
 
-            WriteCarbon();
+            DrawCarbon();
         }
     }
 
-    public void WriteCarbon()
+    public void DrawCarbon()
     {
         Console.SetCursorPosition(X, Y);
         Console.ForegroundColor = Color;
