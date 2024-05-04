@@ -2,7 +2,7 @@
 
 internal class Space
 {
-    private readonly static int CarbonMolecules = 1;
+    private readonly static int CarbonMolecules = 10;
     public readonly static List<Carbon> Carbons = new();
 
     private static bool isPaused = false;
@@ -11,8 +11,7 @@ internal class Space
     {
         BuildCarbon();
 
-        Thread keyInputThread = new(ListenForKeyPress);
-        keyInputThread.Start();
+        new Thread(() => PauseSpace()).Start();
 
         while (true)
         {
@@ -21,7 +20,7 @@ internal class Space
                 foreach (var carbon in Carbons)
                     carbon.Move();
 
-                Thread.Sleep(10);
+                Thread.Sleep(500);
             }
 
             if (!isPaused)
@@ -46,7 +45,7 @@ internal class Space
         }
     }
 
-    static void ListenForKeyPress()
+    static void PauseSpace()
     {
         while (true)
         {

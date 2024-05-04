@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-
-namespace lang;
+﻿namespace lang;
 
 public class Carbon
 {
@@ -25,11 +23,13 @@ public class Carbon
         int newX = X + VelocityX;
         int newY = Y + VelocityY;
 
-        foreach (var carbon in Space.Carbons) 
+        foreach (var carbon in Space.Carbons)
         {
-            if (newX == carbon.X && newY == carbon.Y) 
-            { 
-                
+            if (this != carbon && newX == carbon.X && newY == carbon.Y)
+            {
+                VelocityX *= -1;
+                VelocityY *= -1;
+                break;
             }
         }
 
