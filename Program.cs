@@ -6,6 +6,7 @@ internal class Program
     {
         Console.CursorVisible = false;
         Console.ForegroundColor = ConsoleColor.White;
+        int largestLineIndex = 20;
 
         int lineIndex = 1;
 
@@ -13,7 +14,7 @@ internal class Program
         {
             Console.Clear();
 
-            for (int i = 1; i < 20; i++)
+            for (int i = 1; i < largestLineIndex; i++)
             {
                 Console.SetCursorPosition(i.ToString().Length == 1 ? 1 : 0, i - 1);
                 Display.GreyText(i.ToString());
@@ -25,6 +26,9 @@ internal class Program
             Console.SetCursorPosition(5, lineIndex - 1);
             string? commandInput = Console.ReadLine();
             lineIndex++;
+
+            if (lineIndex >= largestLineIndex)
+                largestLineIndex++;
 
             if (string.IsNullOrWhiteSpace(commandInput))
                 continue;
