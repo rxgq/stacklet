@@ -8,36 +8,42 @@ namespace terminal
         {
             Console.CursorVisible = false;
 
-            int largestLineIndex = 2;
+            int maxLineIndex = 2;
             int lineIndex = 1;
 
             while (true)
             {
-                Console.Clear();
-
-                for (int i = 1; i < largestLineIndex; i++)
+                for (int i = 1; i < maxLineIndex; i++)
                 {
                     if (i != 1)
                         Console.WriteLine();
                     
-                    Console.SetCursorPosition(0, i >= Console.WindowHeight ? Console.WindowHeight - 1 : i - 1);
-                    Console.Write((i).ToString());
+                    Console.SetCursorPosition(0, i - 1);
+                    Display.ColouredText((i).ToString(), Display.LineNumberColour);
 
                     if (lineIndex == i)
                     {
-                        Console.SetCursorPosition(4, i >= Console.WindowHeight ? Console.WindowHeight - 1 : i - 1);
-                        Console.Write("~ ");
+                        Console.SetCursorPosition(4, i - 1);
+                        Display.ColouredText("~ ", Display.PointerColour);
                     }
                 }
 
-                string? commandInput = Console.ReadLine();
+                string? commandInput = Display.ColouredInput(Display.CommandColour);
+
+                Console.SetCursorPosition(4, lineIndex - 1);
+                Display.ColouredText(string.IsNullOrWhiteSpace(commandInput) ? " " : ">", Display.PreviousPointerColour);
 
                 lineIndex++;
 
-                if (lineIndex >= largestLineIndex) 
+                if (maxLineIndex >= Console.WindowHeight) 
                 {
-                    largestLineIndex++;
+                    Console.Clear();
+                    maxLineIndex = 2;
+                    lineIndex = 1;
                 }
+
+                if (lineIndex >= maxLineIndex)
+                    maxLineIndex++;
 
                 if (string.IsNullOrWhiteSpace(commandInput))
                     continue;
