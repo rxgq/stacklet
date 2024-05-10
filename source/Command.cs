@@ -1,4 +1,4 @@
-﻿using terminal.src;
+﻿using terminal.source;
 
 internal class Command
 {
@@ -8,27 +8,18 @@ internal class Command
 
     public Action? Execute { get; set; }
 
+    public const string CLEAR_COMMAND = "c";
+
     public static void Register() 
     {
-        Terminal.Commands["c"] = new Command
+        Terminal.Commands[CLEAR_COMMAND] = new Command
         {
-            Syntax = "c",
+            Syntax = CLEAR_COMMAND,
             Summary = "Clears the terminal",
             Execute = () =>
             {
                 Console.Clear();
-                Terminal.MaxLineIndex = 2;
-                Terminal.LineIndex = 1;
-            }
-        };
 
-        Terminal.Commands["c"] = new Command
-        {
-            Syntax = "c",
-            Summary = "Clears the terminal",
-            Execute = () =>
-            {
-                Console.Clear();
                 Terminal.MaxLineIndex = 2;
                 Terminal.LineIndex = 1;
             }

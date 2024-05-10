@@ -1,4 +1,4 @@
-﻿namespace terminal.src;
+﻿namespace terminal.source;
 
 internal class Terminal
 {
@@ -13,8 +13,7 @@ internal class Terminal
 
         for (int i = 1; i < MaxLineIndex; i++)
         {
-            if (i != 1)
-                Console.WriteLine();
+            if (i != 1) Console.WriteLine();
 
             Console.SetCursorPosition(0, i - 1);
             Display.ColouredText(i.ToString(), Display.LineNumberColour);
@@ -34,13 +33,12 @@ internal class Terminal
         LineIndex++;
 
         if (MaxLineIndex >= Console.WindowHeight)
-            Command.ExecuteCommand("c");
+            Command.ExecuteCommand(Command.CLEAR_COMMAND);
 
         if (LineIndex >= MaxLineIndex)
             MaxLineIndex++;
 
-        if (string.IsNullOrWhiteSpace(commandInput))
-            return;
+        if (string.IsNullOrWhiteSpace(commandInput)) return;
 
         var commandArgs = commandInput.Split(' ');
         var commandName = commandArgs[0];

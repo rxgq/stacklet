@@ -1,4 +1,4 @@
-﻿namespace terminal.src;
+﻿namespace terminal.source;
 
 internal class Display
 {

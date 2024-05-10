@@ -1,4 +1,4 @@
-﻿using terminal.src;
+﻿using terminal.source;
 
 namespace terminal;
 
