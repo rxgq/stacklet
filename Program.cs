@@ -1,4 +1,6 @@
-﻿namespace terminal;
+﻿using terminal.src;
+
+namespace terminal;
 
 internal class Program
 {

@@ -1,4 +1,4 @@
-﻿namespace terminal;
+﻿namespace terminal.src;
 
 internal class Display
 {
@@ -15,7 +15,7 @@ internal class Display
         Console.ResetColor();
     }
 
-    public static string? ColouredInput(ConsoleColor Colour) 
+    public static string? ColouredInput(ConsoleColor Colour)
     {
         Console.ForegroundColor = Colour;
         return Console.ReadLine();
