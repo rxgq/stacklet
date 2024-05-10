@@ -2,9 +2,13 @@
 
 internal class Display
 {
+    public static ConsoleColor PointerColour = ConsoleColor.White;
+    public static ConsoleColor LineNumberColour = ConsoleColor.DarkGray;
+    public static ConsoleColor CommandColour = ConsoleColor.DarkMagenta;
+
     public static void GreyText(string text) 
     {
-        Console.ForegroundColor = ConsoleColor.DarkGray;
+        Console.ForegroundColor = LineNumberColour;
         Console.Write(text);    
 
         Console.ResetColor();
@@ -12,7 +16,7 @@ internal class Display
 
     public static void WhiteText(string text)
     {
-        Console.ForegroundColor = ConsoleColor.White;
+        Console.ForegroundColor = PointerColour;
         Console.Write(text);
 
         Console.ResetColor();

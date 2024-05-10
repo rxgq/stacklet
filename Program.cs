@@ -5,14 +5,14 @@ internal class Program
     static void Main()
     {
         Console.CursorVisible = false;
-        Console.ForegroundColor = ConsoleColor.White;
         int largestLineIndex = 20;
 
-        int lineIndex = 1;
+        int lineIndex = 0;
 
         while (true)
         {
             Console.Clear();
+            lineIndex++;
 
             for (int i = 1; i < largestLineIndex; i++)
             {
@@ -20,12 +20,12 @@ internal class Program
                 Display.GreyText(i.ToString());
 
                 if (lineIndex == i)
-                    Display.WhiteText(" >  ");
+                    Display.WhiteText(" >");
             }
 
             Console.SetCursorPosition(5, lineIndex - 1);
+            Console.ForegroundColor = Display.CommandColour;
             string? commandInput = Console.ReadLine();
-            lineIndex++;
 
             if (lineIndex >= largestLineIndex)
                 largestLineIndex++;
@@ -35,8 +35,6 @@ internal class Program
 
             var commandArgs = commandInput.Split(' ');
             var command = commandArgs[0];
-
-            Console.WriteLine(command);
         }
     }
 }
