@@ -9,7 +9,7 @@ internal class Display
     public static void GreyText(string text) 
     {
         Console.ForegroundColor = LineNumberColour;
-        Console.Write(text);    
+        Console.WriteLine(text);    
 
         Console.ResetColor();
     }
