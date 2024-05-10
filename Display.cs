@@ -6,10 +6,18 @@ internal class Display
     public static ConsoleColor LineNumberColour = ConsoleColor.DarkGray;
     public static ConsoleColor CommandColour = ConsoleColor.DarkMagenta;
 
-    public static void ColouredText(string text, ConsoleColor Color) 
+    public static void GreyText(string text)
     {
-        Console.ForegroundColor = Color;
-        Console.Write(text);    
+        Console.ForegroundColor = LineNumberColour;
+        Console.Write(text);
+
+        Console.ResetColor();
+    }
+
+    public static void WhiteText(string text)
+    {
+        Console.ForegroundColor = PointerColour;
+        Console.Write(text);
 
         Console.ResetColor();
     }

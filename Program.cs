@@ -1,4 +1,6 @@
-﻿namespace terminal
+﻿using System;
+
+namespace terminal
 {
     internal class Program
     {
@@ -14,27 +16,28 @@
                 Console.Clear();
 
                 for (int i = 1; i < largestLineIndex; i++)
-                {             
-                    Console.SetCursorPosition(0, Math.Min(i - 1, 29));
-                    Display.ColouredText(i.ToString(), Display.LineNumberColour);
-
-                    if (i - 1 > 29) 
+                {
+                    if (i != 1)
                         Console.WriteLine();
+                    
+                    Console.SetCursorPosition(0, i >= Console.WindowHeight ? Console.WindowHeight - 1 : i - 1);
+                    Console.Write((i).ToString());
 
-                    if (lineIndex == i) 
+                    if (lineIndex == i)
                     {
-                        Console.SetCursorPosition(3, Math.Min(i - 1, 29));
-                        Display.ColouredText(" ~ ", Display.PointerColour);
-                    }                
+                        Console.SetCursorPosition(4, i >= Console.WindowHeight ? Console.WindowHeight - 1 : i - 1);
+                        Console.Write("~ ");
+                    }
                 }
-               
-                Console.ForegroundColor = Display.CommandColour;
+
                 string? commandInput = Console.ReadLine();
 
                 lineIndex++;
 
-                if (lineIndex >= largestLineIndex)
+                if (lineIndex >= largestLineIndex) 
+                {
                     largestLineIndex++;
+                }
 
                 if (string.IsNullOrWhiteSpace(commandInput))
                     continue;
