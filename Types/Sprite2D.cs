@@ -2,9 +2,7 @@
 
 public class Sprite2D
 {
-    public Vector2 BasePosition { get; set; }
-
-    public Vector2 CurrentPosition { get; set; }
+    public Vector2 Position { get; set; }
 
     public char Character { get; set; }
 
@@ -14,9 +12,8 @@ public class Sprite2D
 
     public Sprite2D(Vector2 position, Scene2D scene, char character, ConsoleColor color)
     {
-        BasePosition = position;
+        Position = position;
         Character = character;
-        CurrentPosition = position;
         Scene = scene;
         Color = color;
 

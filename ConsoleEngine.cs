@@ -14,6 +14,8 @@ public abstract class ConsoleEngine
 
     public static Scene2D? ActiveScene { get; set; }
 
+    // physics object
+
     public static void Start()
     {
         if (HideCursor)
@@ -27,6 +29,7 @@ public abstract class ConsoleEngine
             while (true) 
             {
                 Render();
+
                 var key = Console.ReadKey();
                 Player? player = Sprites.FirstOrDefault(e => e.GetType() == typeof(Player)) as Player;
                 player!.Move(key);
@@ -45,7 +48,8 @@ public abstract class ConsoleEngine
             if (sprite.Scene == ActiveScene)
             {
                 Console.ForegroundColor = sprite.Color;
-                Console.SetCursorPosition(sprite.BasePosition.X, sprite.BasePosition.Y);
+
+                Console.SetCursorPosition(sprite.Position.X, sprite.Position.Y);
                 Console.Write(sprite.Character);
 
                 Console.ResetColor();
@@ -57,8 +61,8 @@ public abstract class ConsoleEngine
     {
         foreach (var registeredSprite in sprite.Scene.Sprites) 
         {
-            if (registeredSprite.BasePosition.X == sprite.BasePosition.X &&
-                registeredSprite.BasePosition.Y == sprite.BasePosition.Y && registeredSprite != sprite) 
+            if (registeredSprite.Position.X == sprite.Position.X &&
+                registeredSprite.Position.Y == sprite.Position.Y && registeredSprite != sprite) 
             {
                 throw new Exception("A sprite at this vector position has already been registered");
             }
