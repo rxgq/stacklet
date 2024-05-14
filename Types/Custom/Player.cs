@@ -59,5 +59,14 @@ public class Player : Sprite2D
 
         return false;
     }
+    public bool IsGrounded() => Position.Y == Console.WindowHeight - 1;
+
+    public void ApplyGravity()
+    {
+        var downArrowKeyPress = new ConsoleKeyInfo(' ', ConsoleKey.DownArrow, false, false, false);
+
+        if (!IsGrounded())
+            Move(downArrowKeyPress);
+    }
 
 }

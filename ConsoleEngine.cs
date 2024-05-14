@@ -43,6 +43,17 @@ public abstract class ConsoleEngine
         {
             while (!ExitRequested)
             {
+                if (HasGravity)
+                {
+                    if (ActiveScene.Sprites.FirstOrDefault(e => e.GetType() == typeof(Player)) is Player player)
+                    {
+                        if (!player.IsGrounded())
+                        {
+                            player.ApplyGravity();
+                        }
+                    }
+                }
+
                 Render();
 
                 if (Console.KeyAvailable)
@@ -50,7 +61,7 @@ public abstract class ConsoleEngine
                     var key = Console.ReadKey(true);
                     Player? player = ActiveScene.Sprites.FirstOrDefault(e => e.GetType() == typeof(Player)) as Player;
 
-                    if (player is not null) 
+                    if (player is not null)
                         player!.Move(key);
 
                     if (key.Key == ConsoleKey.Escape)
@@ -63,6 +74,7 @@ public abstract class ConsoleEngine
             throw;
         }
     }
+
 
     public static void Render()
     {

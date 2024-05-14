@@ -18,6 +18,7 @@ internal class Program
         ConsoleEngine.RegisterSprite(new Player(Vector2.Random(), Level1, '@', ConsoleColor.Cyan));
 
         ConsoleEngine.HideCursor = true;
+        ConsoleEngine.HasGravity = true;
         ConsoleEngine.SetScene(Level1);
 
         ConsoleEngine.Start();
