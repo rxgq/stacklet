@@ -5,8 +5,7 @@ internal class Program
     static void Main()
     {
         ConsoleEngine engine = new();
-
-        Player player = new(Vector2.Zero(), '0');
+        engine.RegisterSprite(new Player(Vector2.Zero(), 'P'));
 
         engine.Start();
     }
