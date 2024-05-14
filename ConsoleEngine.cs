@@ -27,11 +27,14 @@ public abstract class ConsoleEngine
             while (true) 
             {
                 Render();
+                var key = Console.ReadKey();
+                Player? player = Sprites.FirstOrDefault(e => e.GetType() == typeof(Player)) as Player;
+                player!.Move(key);
             }
         }
         catch (Exception) 
-        { 
-        
+        {
+            throw;
         }
     }
 
@@ -52,6 +55,15 @@ public abstract class ConsoleEngine
 
     public static void RegisterSprite(Sprite2D sprite) 
     {
+        foreach (var registeredSprite in sprite.Scene.Sprites) 
+        {
+            if (registeredSprite.BasePosition.X == sprite.BasePosition.X &&
+                registeredSprite.BasePosition.Y == sprite.BasePosition.Y && registeredSprite != sprite) 
+            {
+                throw new Exception("A sprite at this vector position has already been registered");
+            }
+        }
+
         Sprites.Add(sprite);
     }
 

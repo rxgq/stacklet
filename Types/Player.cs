@@ -6,4 +6,27 @@ public class Player : Sprite2D
     {
 
     }
+
+    public void Move(ConsoleKeyInfo keyPressed) 
+    {
+        Vector2 previousPosition = new(CurrentPosition.X, CurrentPosition.Y);
+
+        if (keyPressed.Key == ConsoleKey.UpArrow)
+            CurrentPosition.Y += -1;
+
+        if (keyPressed.Key == ConsoleKey.DownArrow)
+            CurrentPosition.Y += 1;
+
+        if (keyPressed.Key == ConsoleKey.LeftArrow)
+            CurrentPosition.X += -1;
+
+        if (keyPressed.Key == ConsoleKey.RightArrow)
+            CurrentPosition.X += 1;
+
+        Console.SetCursorPosition(previousPosition.X, previousPosition.Y);
+        Console.Write(" ");
+
+        Console.SetCursorPosition(CurrentPosition.X, CurrentPosition.Y);
+        Console.Write(Character);
+    }
 }

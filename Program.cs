@@ -8,8 +8,7 @@ internal class Program
     {
         Scene2D grasslandsScene = new("Grasslands");
 
-        ConsoleEngine.RegisterSprite(new Sprite2D(Vector2.Random(), grasslandsScene, 'P', ConsoleColor.White));
-        ConsoleEngine.RegisterSprite(new Sprite2D(Vector2.Random(), grasslandsScene, 'T', ConsoleColor.Red));
+        ConsoleEngine.RegisterSprite(new Player(Vector2.Random(), grasslandsScene, 'P', ConsoleColor.White));
 
         ConsoleEngine.HideCursor = true;
         ConsoleEngine.HasGravity = false;

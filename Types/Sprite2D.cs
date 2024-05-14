@@ -8,7 +8,7 @@ public class Sprite2D
 
     public char Character { get; set; }
 
-    public Scene2D? Scene { get; set; }
+    public Scene2D Scene { get; set; }
 
     public ConsoleColor Color { get; set; }
 
