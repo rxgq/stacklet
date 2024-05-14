@@ -1,27 +1,48 @@
 ﻿using System.Security.Cryptography.X509Certificates;
+using tgm.Types;
 
 namespace tgm;
 
-public class ConsoleEngine
+public abstract class ConsoleEngine
 {
-    List<Sprite2D> Sprites = new();
+    public static List<Sprite2D> Sprites = new();
 
-    public ConsoleEngine() 
-    { 
+    public static bool HideCursor { get; set; }
+
+    public static void Start()
+    {
+        if (HideCursor)
+            Console.CursorVisible = false;
+
+        try 
+        { 
+            while (true) 
+            {
+                Render();
+            }
+        }
+        catch (Exception) 
+        { 
         
+        }
     }
 
-    public void Start()
+    public static void Render() 
     {
-        foreach (var sprite in Sprites) 
-        { 
+        foreach (var sprite in Sprites)
+        {
             Console.SetCursorPosition(sprite.BasePosition.X, sprite.BasePosition.Y);
             Console.Write(sprite.Character);
         }
     }
 
-    public void RegisterSprite(Sprite2D sprite) 
+    public static void RegisterSprite(Sprite2D sprite) 
     {
         Sprites.Add(sprite);
+    }
+
+    public static void UnregisterSprite(Sprite2D sprite) 
+    {
+        Sprites.Remove(sprite);
     }
 }

@@ -1,12 +1,14 @@
-﻿namespace tgm;
+﻿using tgm.Types;
+
+namespace tgm;
 
 internal class Program
 {
     static void Main()
     {
-        ConsoleEngine engine = new();
-        engine.RegisterSprite(new Player(Vector2.Zero(), 'P'));
+        ConsoleEngine.RegisterSprite(new Sprite2D(Vector2.Zero(), 'P'));
+        ConsoleEngine.HideCursor = true;
 
-        engine.Start();
+        ConsoleEngine.Start();
     }
 }
