@@ -12,6 +12,7 @@ public abstract class ConsoleEngine
     private static Thread? GameLoop;
 
     private static bool ExitRequested = false;
+    private static bool ShapesRendered = false;
 
     public static List<Sprite2D> Sprites = new();
 
@@ -78,6 +79,9 @@ public abstract class ConsoleEngine
             }
         }
 
+        if (ShapesRendered)
+            return;
+
         foreach (var shape in Shapes)
         {
             if (shape.Scene == ActiveScene)
@@ -90,6 +94,8 @@ public abstract class ConsoleEngine
                 Console.ResetColor();
             }
         }
+
+        ShapesRendered = true;
     }
 
     public static void RegisterSprite(Sprite2D sprite)
@@ -150,12 +156,10 @@ public abstract class ConsoleEngine
         }
     }
 
-    public static void GenerateVoronoiNoise(int seed, int points, Scene2D scene, List<ConsoleColor> colors, List<char> characters)
+    public static void GenerateVoronoiNoise(int variation, int points, Scene2D scene, List<ConsoleColor> colors, List<char> characters)
     {
-        List<(int, int)> coords = new();
-        List<Vector2> vectors = new();
-
         Random r = new();
+        List<Vector2> vectors = new();
 
         for (int i = 0; i < points; i++)
         {
@@ -179,7 +183,7 @@ public abstract class ConsoleEngine
                         minimumDistance = distance;
                 }
 
-                if (minimumDistance > seed)
+                if (minimumDistance > variation)
                     RegisterShape(new Shape2D(new Vector2(x, y), scene, characters[r.Next(0, characters.Count)], colors[r.Next(0, colors.Count)]));
             }
         }

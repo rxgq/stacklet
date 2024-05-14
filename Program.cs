@@ -7,18 +7,18 @@ internal class Program
 {
     static void Main()
     {
-        Scene2D grasslandsScene = new("Grasslands");
-        Scene2D rockyHillsScene = new("Rocky Hills");
+        Scene2D Level1 = new("Grasslands");
 
         ConsoleEngine.GenerateVoronoiNoise(
-            seed: 10, points: 140, grasslandsScene,          
-            new List<ConsoleColor>() { ConsoleColor.White, ConsoleColor.DarkGray, ConsoleColor.Gray }, 
-            new List<char>() { 'x', 'o', '.' }
+            variation: 20, points: 70, Level1,          
+            new List<ConsoleColor>() { ConsoleColor.White, ConsoleColor.DarkGray, ConsoleColor.Gray, ConsoleColor.Red, ConsoleColor.DarkRed }, 
+            new List<char>() { 'x', 'o', '.', '#', '@', '<', '>' }
         );
 
+        ConsoleEngine.RegisterSprite(new Player(Vector2.Random(), Level1, '@', ConsoleColor.Cyan));
+
         ConsoleEngine.HideCursor = true;
-        ConsoleEngine.HasGravity = false;
-        ConsoleEngine.SetScene(grasslandsScene);
+        ConsoleEngine.SetScene(Level1);
 
         ConsoleEngine.Start();
     }
