@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace tgm.Types;
+﻿namespace tgm.Types;
 
 public class Vector2
 {

@@ -1,13 +1,14 @@
-﻿namespace tgm.Types;
+﻿namespace tgm.Types.Custom;
 
 public class Player : Sprite2D
 {
-    public Player(Vector2 position, Scene2D scene, char character, ConsoleColor color) : base(position, scene, character, color)
+    public Player(Vector2 position, Scene2D scene, char character, ConsoleColor color)
+        : base(position, scene, character, color)
     {
 
     }
 
-    public void Move(ConsoleKeyInfo keyPressed) 
+    public void Move(ConsoleKeyInfo keyPressed)
     {
         Vector2 previousPosition = new(Position.X, Position.Y);
 
@@ -26,7 +27,7 @@ public class Player : Sprite2D
         Console.SetCursorPosition(previousPosition.X, previousPosition.Y);
         Console.Write(" ");
 
-        if (IsCollision(Position, this)) 
+        if (IsCollision(Position, this))
         {
             Position = previousPosition;
             return;
@@ -44,7 +45,15 @@ public class Player : Sprite2D
 
         foreach (var registeredSprite in ConsoleEngine.Sprites)
         {
-            if (position.Equals(sprite.Position) && registeredSprite != sprite)
+            if (registeredSprite.Position.X == sprite.Position.X &&
+                registeredSprite.Position.Y == sprite.Position.Y && registeredSprite != sprite)
+                return true;
+        }
+
+        foreach (var registeredShape in ConsoleEngine.ActiveScene.Shapes)
+        {
+            if (registeredShape.Position.X == sprite.Position.X &&
+                registeredShape.Position.Y == sprite.Position.Y)
                 return true;
         }
 
