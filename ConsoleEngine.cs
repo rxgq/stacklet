@@ -49,12 +49,11 @@ public abstract class ConsoleEngine
                     {
                         if (!player.IsGrounded())
                         {
+                            Thread.Sleep(50);
                             player.ApplyGravity();
                         }
                     }
                 }
-
-                Render();
 
                 if (Console.KeyAvailable)
                 {
@@ -67,6 +66,8 @@ public abstract class ConsoleEngine
                     if (key.Key == ConsoleKey.Escape)
                         ExitRequested = true;
                 }
+
+                Render();
             }
         }
         catch (Exception)
@@ -74,7 +75,6 @@ public abstract class ConsoleEngine
             throw;
         }
     }
-
 
     public static void Render()
     {
