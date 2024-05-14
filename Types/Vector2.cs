@@ -1,4 +1,6 @@
-﻿namespace tgm.Types;
+﻿using System;
+
+namespace tgm.Types;
 
 public class Vector2
 {
@@ -11,4 +13,14 @@ public class Vector2
     }
 
     public static Vector2 Zero() => new(0, 0);
+
+    public static Vector2 Random()
+    {
+        Random r = new();
+
+        int x = r.Next(0, Console.WindowWidth);
+        int y = r.Next(0, Console.WindowHeight);
+
+        return new Vector2(x, y);
+    }
 }
