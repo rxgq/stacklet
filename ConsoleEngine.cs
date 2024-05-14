@@ -9,7 +9,9 @@ namespace tgm;
 
 public abstract class ConsoleEngine
 {
-    private static Thread? gameLoop;
+    private static Thread? GameLoop;
+
+    private static bool ExitRequested = false;
 
     public static List<Sprite2D> Sprites = new();
 
@@ -17,7 +19,8 @@ public abstract class ConsoleEngine
 
     public static bool HideCursor { get; set; }
     public static bool HasGravity { get; set; }
-    public static Scene2D ActiveScene { get; set; }
+    public static Scene2D ActiveScene { get; private set; }
+
 
     public static void Start()
     {
@@ -27,28 +30,30 @@ public abstract class ConsoleEngine
         if (ActiveScene is null)
             throw new NullReferenceException("An active scene is required to run the engine.");
 
-        gameLoop = new Thread(GameLoop);
-        gameLoop.Start();
+        GameLoop = new Thread(Run);
+        GameLoop.Start();
     }
 
-    private static void GameLoop()
+    public static void Finish() => ExitRequested = true;
+
+    private static void Run()
     {
         try
         {
-            bool exitRequested = false;
-
-            while (!exitRequested)
+            while (!ExitRequested)
             {
                 Render();
 
                 if (Console.KeyAvailable)
                 {
                     var key = Console.ReadKey(true);
-                    Player? player = Sprites.FirstOrDefault(e => e.GetType() == typeof(Player)) as Player;
-                    player!.Move(key);
+                    Player? player = ActiveScene.Sprites.FirstOrDefault(e => e.GetType() == typeof(Player)) as Player;
+
+                    if (player is not null) 
+                        player!.Move(key);
 
                     if (key.Key == ConsoleKey.Escape)
-                        exitRequested = true;
+                        ExitRequested = true;
                 }
             }
         }
@@ -102,8 +107,8 @@ public abstract class ConsoleEngine
 
     public static void RegisterShape(Shape2D shape)
     {
-        if (!IsPositionAvailable(shape.Position, shape.Scene, shape))
-            throw new Exception("A sprite at this vector position has already been registered");
+        //if (!IsPositionAvailable(shape.Position, shape.Scene, shape))
+            //throw new Exception("A sprite at this vector position has already been registered");
 
         Shapes.Add(shape);
     }
@@ -111,6 +116,79 @@ public abstract class ConsoleEngine
     public static void UnregisterShape(Shape2D shape)
     {
         Shapes.Remove(shape);
+    }
+
+    public static void RegisterManyShapes(Vector2 startPosition, Vector2 endPosition, Scene2D scene)
+    {
+        int dx = Math.Abs(endPosition.X - startPosition.X);
+        int dy = Math.Abs(endPosition.Y - startPosition.Y);
+        int sx = startPosition.X < endPosition.X ? 1 : -1;
+        int sy = startPosition.Y < endPosition.Y ? 1 : -1;
+        int err = dx - dy;
+
+        int x = startPosition.X;
+        int y = startPosition.Y;
+
+        while (true)
+        {
+            RegisterShape(new Block(new Vector2(x, y), scene, '0', ConsoleColor.DarkGray));
+
+            if (x == endPosition.X && y == endPosition.Y)
+                break;
+
+            int e2 = 2 * err;
+            if (e2 > -dy)
+            {
+                err -= dy;
+                x += sx;
+            }
+            if (e2 < dx)
+            {
+                err += dx;
+                y += sy;
+            }
+        }
+    }
+
+    public static void GenerateVoronoiNoise(int seed, int points, Scene2D scene, List<ConsoleColor> colors, List<char> characters)
+    {
+        List<(int, int)> coords = new();
+        List<Vector2> vectors = new();
+
+        Random r = new();
+
+        for (int i = 0; i < points; i++)
+        {
+            int x = r.Next(Console.WindowWidth);
+            int y = r.Next(Console.WindowHeight);
+
+            vectors.Add(new(x, y));
+        }
+
+        for (int y = 0; y < Console.WindowHeight; y++)
+        {
+            for (int x = 0; x < Console.WindowWidth; x++)
+            {
+                int minimumDistance = int.MaxValue;
+
+                foreach (var vector in vectors)
+                {
+                    int distance = (int)Math.Pow(vector.X - x, 2) + (int)Math.Pow(vector.Y - y, 2);
+
+                    if (distance < minimumDistance)
+                        minimumDistance = distance;
+                }
+
+                if (minimumDistance > seed)
+                    RegisterShape(new Shape2D(new Vector2(x, y), scene, characters[r.Next(0, characters.Count)], colors[r.Next(0, colors.Count)]));
+            }
+        }
+    }
+
+    public static void SetScene(Scene2D scene) 
+    {
+        Console.Clear();
+        ActiveScene = scene;
     }
 
     public static bool IsPositionAvailable(Vector2 position, Scene2D scene, dynamic obj) // ew dynamic

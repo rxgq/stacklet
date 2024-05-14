@@ -21,4 +21,12 @@ public class Vector2
 
         return new Vector2(x, y);
     }
+
+    public double DistanceTo(Vector2 other)
+    {
+        int dx = X - other.X;
+        int dy = Y - other.Y;
+
+        return Math.Sqrt(dx * dx + dy * dy);
+    }
 }
