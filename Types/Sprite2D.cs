@@ -10,12 +10,15 @@ public class Sprite2D
 
     public Scene2D? Scene { get; set; }
 
-    public Sprite2D(Vector2 position, Scene2D scene, char character)
+    public ConsoleColor Color { get; set; }
+
+    public Sprite2D(Vector2 position, Scene2D scene, char character, ConsoleColor color)
     {
         BasePosition = position;
         Character = character;
         CurrentPosition = position;
         Scene = scene;
+        Color = color;
 
         scene.Sprites.Add(this);
     }

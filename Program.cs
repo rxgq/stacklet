@@ -6,14 +6,15 @@ internal class Program
 {
     static void Main()
     {
-        Scene2D scene1 = new("Scene 1");
+        Scene2D grasslandsScene = new("Grasslands");
+        Scene2D rockyHillsScene = new("RockyHills");
 
-        ConsoleEngine.RegisterSprite(new Sprite2D(Vector2.Zero(), scene1, 'P'));
-
+        ConsoleEngine.RegisterSprite(new Sprite2D(Vector2.Zero(), grasslandsScene, 'P', ConsoleColor.White));
+        ConsoleEngine.RegisterSprite(new Sprite2D(new Vector2(10, 10), grasslandsScene, 'T', ConsoleColor.Red));
 
         ConsoleEngine.HideCursor = true;
         ConsoleEngine.HasGravity = false;
-        ConsoleEngine.ActiveScene = scene1;
+        ConsoleEngine.ActiveScene = grasslandsScene;
 
         ConsoleEngine.Start();
     }

@@ -39,8 +39,14 @@ public abstract class ConsoleEngine
     {
         foreach (var sprite in Sprites)
         {
-            Console.SetCursorPosition(sprite.BasePosition.X, sprite.BasePosition.Y);
-            Console.Write(sprite.Character);
+            if (sprite.Scene == ActiveScene)
+            {
+                Console.ForegroundColor = sprite.Color;
+                Console.SetCursorPosition(sprite.BasePosition.X, sprite.BasePosition.Y);
+                Console.Write(sprite.Character);
+
+                Console.ResetColor();
+            }
         }
     }
 
