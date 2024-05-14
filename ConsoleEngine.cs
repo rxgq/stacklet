@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 using tgm.Types;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace tgm;
 
@@ -9,10 +10,17 @@ public abstract class ConsoleEngine
 
     public static bool HideCursor { get; set; }
 
+    public static bool HasGravity { get; set; }
+
+    public static Scene2D? ActiveScene { get; set; }
+
     public static void Start()
     {
         if (HideCursor)
             Console.CursorVisible = false;
+
+        if (ActiveScene is null) 
+            throw new NullReferenceException("An active scene is required to run the engine.");
 
         try 
         { 

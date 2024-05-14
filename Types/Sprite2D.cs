@@ -8,11 +8,16 @@ public class Sprite2D
 
     public char Character { get; set; }
 
-    public Sprite2D(Vector2 position, char character)
+    public Scene2D? Scene { get; set; }
+
+    public Sprite2D(Vector2 position, Scene2D scene, char character)
     {
         BasePosition = position;
         Character = character;
         CurrentPosition = position;
+        Scene = scene;
+
+        scene.Sprites.Add(this);
     }
 
     public void DestroySelf() => ConsoleEngine.Sprites.Remove(this); 

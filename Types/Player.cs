@@ -2,7 +2,7 @@
 
 public class Player : Sprite2D
 {
-    public Player(Vector2 position, char character) : base(position, character)
+    public Player(Vector2 position, Scene2D scene, char character) : base(position, scene, character)
     {
 
     }
