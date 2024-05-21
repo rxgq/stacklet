@@ -1,26 +1,24 @@
-﻿using tgm.Types;
-using tgm.Types.Custom;
-
-namespace tgm;
+﻿namespace tgm;
 
 internal class Program
 {
     static void Main()
     {
-        Scene2D Level1 = new("Grasslands");
+        string path = "C:\\Users\\adunderdale\\langtest.txt";
+        var lines = File.ReadAllLines(path);
 
-        ConsoleEngine.GenerateVoronoiNoise(
-            variation: 20, points: 70, Level1,          
-            new List<ConsoleColor>() { ConsoleColor.White, ConsoleColor.DarkGray, ConsoleColor.Gray, ConsoleColor.Red, ConsoleColor.DarkRed }, 
-            new List<char>() { 'x', 'o', '.', '#', '@', '<', '>' }
-        );
+        foreach (var line in lines) 
+        {
+            Lexer.Tokens.Clear(); // remove
 
-        ConsoleEngine.RegisterSprite(new Player(Vector2.Random(), Level1, '@', ConsoleColor.Cyan));
+            Lexer.Tokenize(line);
+            Console.WriteLine("\n");
 
-        ConsoleEngine.HideCursor = true;
-        ConsoleEngine.HasGravity = true;
-        ConsoleEngine.SetScene(Level1);
+            foreach (var c in Lexer.Tokens) 
+            {
+                Console.Write(c.Value);
+            }
+        }   
 
-        ConsoleEngine.Start();
     }
 }
