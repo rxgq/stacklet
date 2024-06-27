@@ -45,12 +45,11 @@ internal class Executer
 
     private void ExecuteInstruction()
     {
-        if (CallStack.Count == 0 && Instruction.Type == Inst.PROC) 
+        if (CallStack.Count == 0 && Instruction.Type == Inst.PROC)
         {
             Pointer--;
             return;
         }
-            
 
         _ = Instruction.Type switch
         {
@@ -71,6 +70,7 @@ internal class Executer
             Inst.WT => ExecuteWt(),
 
             Inst.JMP => ExecuteJmp(),
+            Inst.JNZ => ExecuteJnz(),
             Inst.RET => ExecuteRet(),
             Inst.PROC => null, // already pre-processed
 
@@ -134,20 +134,29 @@ internal class Executer
 
     private object ExecuteAnd()
     {
-        Registers[Param1] &= Registers[Param2];
+        if (IsRegister(Param2))
+            Registers[Param1] &= Registers[Param2];
+        else
+            Registers[Param1] &= Convert.ToInt32(Param2);
+
         return new object();
     }
 
     private object ExecuteOr()
     {
-        Registers[Param1] |= Registers[Param2];
+        if (IsRegister(Param2))
+            Registers[Param1] |= Registers[Param2];
+        else
+            Registers[Param1] |= Convert.ToInt32(Param2);
         return new object();
     }
 
     private object ExecuteXor()
     {
-        Registers[Param1] ^= Registers[Param2];
-        return new object();
+        if (IsRegister(Param2))
+            Registers[Param1] ^= Registers[Param2];
+        else
+            Registers[Param1] ^= Convert.ToInt32(Param2); return new object();
     }
 
     private object ExecuteMov()
@@ -176,7 +185,7 @@ internal class Executer
         return new object();
     }
 
-    private object ExecuteWt() 
+    private object ExecuteWt()
     {
         Thread.Sleep(Convert.ToInt32(Param1) * 1000);
         return new object();
@@ -197,6 +206,23 @@ internal class Executer
             CallStack.Push(Pointer);
             Pointer = index - 1;
         }
+
+        return new object();
+    }
+
+    private object ExecuteJnz()
+    {
+        if (IsRegister(Param2))
+        {
+            if (Registers[Param2] != 0)
+                ExecuteJmp();
+        }
+        else
+        {
+            if (Convert.ToInt32(Param2) != 0)
+                ExecuteJmp();
+        }
+            
 
         return new object();
     }

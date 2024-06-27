@@ -46,6 +46,9 @@ enum Inst
     // Jumps to a process
     JMP, // jmp <name>
 
+    // Jumps if not zero
+    JNZ, // jnz <name>
+
     // exits the process
     RET, // ret
 
@@ -139,6 +142,7 @@ internal class Lexer
 
             "proc" => OnProc(),
             "jmp" => OnJmp(),
+            "jnz" => OnJnz(),
             "ret" => OnRet(),
 
             _ => new Instruction(Inst.BAD, "", OnParams()),
@@ -181,17 +185,21 @@ internal class Lexer
     private Instruction OnOut()
         => new(Inst.OUT, "OUT", OnParams());
 
+    private Instruction OnWt()
+        => new(Inst.WT, "WT", OnParams());
+
     private Instruction OnProc()
         => new(Inst.PROC,"PROC",OnParams()); 
     
     private Instruction OnJmp()
         => new(Inst.JMP, "JMP", OnParams());
 
+    private Instruction OnJnz()
+        => new(Inst.JNZ, "JNZ", OnParams());
+
     private Instruction OnRet()
         => new(Inst.RET, "RET", OnParams());
 
-    private Instruction OnWt()
-        => new(Inst.WT, "WT", OnParams());
 
     private List<string> OnParams()
     {

@@ -1,1 +1,12 @@
-﻿
+﻿jmp main
+
+main:
+  mov eax, 5
+  jmp dec_num
+  ret
+
+dec_num:
+  dec eax
+  prt eax
+  jnz dec_num, eax
+  ret
