@@ -1,6 +1,5 @@
 ﻿namespace assembly.src;
 
-
 internal class Executer
 {
     private readonly Dictionary<string, int> Registers = new()
@@ -8,16 +7,31 @@ internal class Executer
         { "eax", 0 }, { "ebx", 0 }, { "ecx", 0 }, { "edx", 0 },
     };
 
+    private readonly Dictionary<string, int> Processes = new();
+    private readonly Stack<int> CallStack = new();
+
     public List<Instruction> Instructions { get; set; }
+    public int Pointer { get; set; } = 0;
 
-    public int Current { get; set; } = 0;
-
-    public string Param1 => Instruction().Parameters[0];
-    public string Param2 => Instruction().Parameters[1];
+    public string Param1 => Instruction.Parameters.Count > 0 ? Instruction.Parameters[0] : string.Empty;
+    public string Param2 => Instruction.Parameters.Count > 1 ? Instruction.Parameters[1] : string.Empty;
+    public Instruction Instruction => Instructions[Pointer];
 
     public Executer(List<Instruction> instructions)
     {
         Instructions = instructions;
+        PreProcessProcs();
+    }
+
+    private void PreProcessProcs()
+    {
+        int instIdx = -1;
+        foreach (var inst in Instructions)
+        {
+            instIdx++;
+            if (inst.Type == Inst.PROC)
+                Processes[inst.Identifier!] = instIdx;
+        }
     }
 
     public void Execute()
@@ -25,29 +39,34 @@ internal class Executer
         while (!IsEOFInstruction())
         {
             ExecuteInstruction();
-            Current++;
+            Pointer++;
         }
     }
 
     private void ExecuteInstruction()
     {
-        _ = Instruction().Type switch
+        _ = Instruction.Type switch
         {
-            InstructionType.ADD => ExecuteAdd(),
-            InstructionType.SUB => ExecuteSub(),
-            InstructionType.MUL => ExecuteMul(),
-            InstructionType.DIV => ExecuteDiv(),
-            InstructionType.INC => ExecuteInc(),
-            InstructionType.DEC => ExecuteDec(),
+            Inst.ADD => ExecuteAdd(),
+            Inst.SUB => ExecuteSub(),
+            Inst.MUL => ExecuteMul(),
+            Inst.DIV => ExecuteDiv(),
+            Inst.INC => ExecuteInc(),
+            Inst.DEC => ExecuteDec(),
 
-            InstructionType.AND => ExecuteAnd(),
-            InstructionType.OR => ExecuteOr(),
-            InstructionType.XOR => ExecuteXor(),
+            Inst.AND => ExecuteAnd(),
+            Inst.OR => ExecuteOr(),
+            Inst.XOR => ExecuteXor(),
 
-            InstructionType.MOV => ExecuteMov(),
-            InstructionType.PRT => ExecutePrt(),
+            Inst.MOV => ExecuteMov(),
+            Inst.PRT => ExecutePrt(),
+            Inst.OUT => ExecuteOut(),
 
-            InstructionType.COMMENT => null,
+            Inst.JMP => ExecuteJmp(),
+            Inst.RET => ExecuteRet(),
+            Inst.PROC => null, // already pre-processed
+
+            Inst.COMMENT => null,
 
             _ => throw new Exception("INSTRUCTION NOT REGISTERED")
         };
@@ -55,11 +74,8 @@ internal class Executer
 
     private object ExecuteAdd()
     {
-        // if object to add is register, add contents...
         if (IsRegister(Param2))
             Registers[Param1] += Registers[Param2];
-
-        // ...otherwise convert to int and add value directly
         else
             Registers[Param1] += Convert.ToInt32(Param2);
 
@@ -68,11 +84,8 @@ internal class Executer
 
     private object ExecuteSub()
     {
-        // if object to subtract is register, subtract contents...
         if (IsRegister(Param2))
             Registers[Param1] -= Registers[Param2];
-
-        // ...otherwise convert to int and subtract value directly
         else
             Registers[Param1] -= Convert.ToInt32(Param2);
 
@@ -81,23 +94,18 @@ internal class Executer
 
     private object ExecuteMul()
     {
-        // if object to multiply is register, multiply contents...
         if (IsRegister(Param2))
             Registers[Param1] *= Registers[Param2];
-
-        // ...otherwise convert to int and multiply value directly
         else
             Registers[Param1] *= Convert.ToInt32(Param2);
 
         return new object();
     }
+
     private object ExecuteDiv()
     {
-        // if object to subtract is register, divide contents...
         if (IsRegister(Param2))
             Registers[Param1] /= Registers[Param2];
-
-        // ...otherwise convert to int and divide value directly
         else
             Registers[Param1] /= Convert.ToInt32(Param2);
 
@@ -106,27 +114,20 @@ internal class Executer
 
     private object ExecuteInc()
     {
-        // increment the register value
         Registers[Param1]++;
-
         return new object();
     }
 
     private object ExecuteDec()
     {
-        // decrement the register value
         Registers[Param1]--;
-
         return new object();
     }
 
     private object ExecuteMov()
     {
-        // if object to add is register, set contents...
         if (IsRegister(Param2))
             Registers[Param1] = Registers[Param2];
-
-        // ...otherwise convert to int and set value directly
         else
             Registers[Param1] = Convert.ToInt32(Param2);
 
@@ -135,33 +136,55 @@ internal class Executer
 
     private object ExecutePrt()
     {
-        // output the register value
-        Console.Write($"{Param1.ToLower()}: {Registers[Param1]}\n");
+        if (IsRegister(Param1))
+            Console.Write($"{Param1.ToLower()}: {Registers[Param1]}\n");
+        else
+            Console.Write($" {Param1}");
 
+        return new object();
+    }
+
+    private object ExecuteOut()
+    {
+        Console.WriteLine($"{Param1}: {Convert.ToString(Registers[Param1], 2).PadLeft(32, '0')}");
         return new object();
     }
 
     private object ExecuteAnd()
     {
-        // apply logical and
         Registers[Param1] &= Registers[Param2];
-
         return new object();
     }
 
-
     private object ExecuteOr()
     {
-        // apply logical or
         Registers[Param1] |= Registers[Param2];
-
         return new object();
     }
 
     private object ExecuteXor()
     {
-        // apply logical xor
         Registers[Param1] ^= Registers[Param2];
+        return new object();
+    }
+
+    private object ExecuteRet()
+    {
+        if (CallStack.Count > 0)
+        {
+            Pointer = CallStack.Pop();
+        }
+
+        return new object();
+    }
+
+    private object ExecuteJmp()
+    {
+        if (Processes.TryGetValue(Param1, out var index))
+        {
+            CallStack.Push(Pointer);
+            Pointer = index - 1;
+        }
 
         return new object();
     }
@@ -169,9 +192,6 @@ internal class Executer
     private bool IsRegister(string key)
         => Registers.ContainsKey(key);
 
-    private Instruction Instruction()
-        => Instructions[Current];
-
     private bool IsEOFInstruction()
-        => Instructions[Current].Type == InstructionType.EOF;
+        => Instructions[Pointer].Type == Inst.EOF;
 }

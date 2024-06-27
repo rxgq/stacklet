@@ -1,31 +1,9 @@
-﻿; Sample Assembly Program to Test Interpreter
+﻿jmp add_num
 
-; Initialize registers
-MOV EAX, 10    ; EAX = 10
-MOV EBX, 5     ; EBX = 5
 
-; Perform arithmetic operations
-ADD EAX, EBX   ; EAX = EAX + EBX = 10 + 5 = 15
-SUB EAX, 3     ; EAX = EAX - 3 = 15 - 3 = 12
+add_num:
+  add eax, 1
+  prt eax
+  ret
 
-; Print register values
-PRT EAX        ; Print value of EAX
-PRT EBX        ; Print value of EBX
 
-; Increment and decrement operations
-INC EAX        ; EAX = EAX + 1 = 12 + 1 = 13
-DEC EBX        ; EBX = EBX - 1 = 5 - 1 = 4
-
-; Print updated register values
-PRT EAX        ; Print updated value of EAX
-PRT EBX        ; Print updated value of EBX
-
-; Bitwise operations
-AND EAX, EBX   ; EAX = EAX & EBX = 13 & 4 = 4
-OR EAX, EBX    ; EAX = EAX | EBX = 4 | 4 = 4
-XOR EAX, EBX   ; EAX = EAX ^ EBX = 4 ^ 4 = 0
-
-; Print final value of EAX after bitwise operations
-PRT EAX        ; Print final value of EAX
-
-; End of program
