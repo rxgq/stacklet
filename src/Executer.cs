@@ -65,6 +65,11 @@ internal class Executer
             Inst.OR => ExecuteOr(),
             Inst.XOR => ExecuteXor(),
             Inst.CMP => ExecuteCmp(),
+            Inst.NOT => ExecuteNot(),
+            Inst.NEG => ExecuteNeg(),
+            Inst.SHL => ExecuteShl(),
+            Inst.SHR => ExecuteShr(),
+            Inst.NOP => null,
 
             Inst.MOV => ExecuteMov(),
             Inst.PRT => ExecutePrt(),
@@ -167,6 +172,30 @@ internal class Executer
         return new object();
     }
 
+    private object ExecuteNot() 
+    {
+        Memory[Param1] = ~Memory[Param1];
+        return new object();
+    }
+
+    private object ExecuteNeg()
+    {
+        Memory[Param1] = -Memory[Param1];
+        return new object();
+    }
+
+    private object ExecuteShl()
+    {
+        Memory[Param1] = Memory[Param1] << Convert.ToInt32(Param2);
+        return new object();
+    }
+
+    private object ExecuteShr()
+    {
+        Memory[Param1] = Memory[Param1] >> Convert.ToInt32(Param2);
+        return new object();
+    }
+
     private object ExecuteMov()
     {
         if (IsMemory(Param2))
@@ -179,17 +208,19 @@ internal class Executer
 
     private object ExecutePrt()
     {
-        if (IsMemory(Param1))
-            Console.WriteLine($"{Param1.ToLower()}: {Memory[Param1]}\n");
-        else
-            Console.WriteLine($" {Param1}");
+        Console.Write(IsMemory(Param1) 
+            ? $"{Param1.ToLower()}: {Memory[Param1]}\n" 
+            : $"{Param1}\n");
 
         return new object();
     }
 
     private object ExecuteOut()
     {
-        Console.WriteLine($"{Param1}: {Convert.ToString(Memory[Param1], 2).PadLeft(32, '0')}");
+        Console.WriteLine(IsMemory(Param1)
+            ? $"{Param1}: {Convert.ToString(Memory[Param1], 2).PadLeft(32, '0')}"
+            : Convert.ToString(int.Parse(Param1), 2).PadLeft(32, '0'));
+
         return new object();
     }
 

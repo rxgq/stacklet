@@ -31,6 +31,21 @@ enum Inst
     // performs logical xor on reg1 and reg2
     XOR, // xor <reg1> <reg2>
 
+    // performs logical not on reg1
+    NOT, // not <reg1>
+
+    // performs negation on reg1
+    NEG, // neg <reg1>
+
+    // peforms a left shift on reg1
+    SHL, // shl <reg1>
+
+    // performs a right shift on reg2
+    SHR, // shr <reg1>
+
+    // does nothing, next instruction
+    NOP, // nop
+
     // checks reg1 against reg2, sets zero flag to result
     CMP, // cmp <reg1> <reg2>
 
@@ -46,10 +61,10 @@ enum Inst
     // defines a process 
     PROC, // <name>:
 
-    // Jumps to a process
+    // jumps to a process
     JMP, // jmp <name>
 
-    // Jumps if not zero
+    // jumps if not zero
     JNZ, // jnz <name>
 
     // exits the process
@@ -96,7 +111,7 @@ internal class Lexer
     public int Current { get; set; } = 0;
 
     
-    //public string Instruction => InstructionToken().ToLower();
+    public string Instruction => InstructionToken().ToLower();
 
     public Lexer(string[] source)
     {
@@ -125,7 +140,7 @@ internal class Lexer
         if (IsProc())
             return new Instruction(Inst.PROC, "PROC", OnParams(), ProcIdentifier());
 
-        return InstructionToken().ToLower() switch
+        return Instruction switch
         {
             "add" => OnAdd(),
             "sub" => OnSub(),
@@ -138,6 +153,11 @@ internal class Lexer
             "or"  =>  OnOr(),
             "xor" => OnXor(),
             "cmp" => OnCmp(),
+            "not" => OnNot(),
+            "neg" => OnNeg(),
+            "shl" => OnShl(),
+            "shr" => OnShr(),
+            "nop" => OnNop(),
 
             "mov" => OnMov(),
             "prt" => OnPrt(),
@@ -179,6 +199,23 @@ internal class Lexer
 
     private Instruction OnXor()
         => new(Inst.XOR, "XOR", OnParams());
+    private Instruction OnCmp()
+        => new(Inst.CMP, "CMP", OnParams());
+
+    private Instruction OnNot()
+        => new(Inst.NOT, "NOT", OnParams());
+
+    private Instruction OnNeg()
+        => new(Inst.NEG, "NEG", OnParams());
+
+    private Instruction OnShl()
+        => new(Inst.SHL, "SHL", OnParams());
+
+    private Instruction OnShr()
+        => new(Inst.SHR, "SHR", OnParams());
+
+    private Instruction OnNop()
+        => new(Inst.NOP, "NOP", OnParams());
 
     private Instruction OnMov()
         => new(Inst.MOV, "MOV", OnParams());
@@ -190,7 +227,7 @@ internal class Lexer
         => new(Inst.OUT, "OUT", OnParams());
 
     private Instruction OnWt()
-        => new(Inst.WT, "WT", OnParams());
+        => new(Inst.WT,  "WT",  OnParams());
 
     private Instruction OnProc()
         => new(Inst.PROC,"PROC",OnParams()); 
@@ -203,8 +240,7 @@ internal class Lexer
 
     private Instruction OnRet()
         => new(Inst.RET, "RET", OnParams());
-    private Instruction OnCmp()
-        => new(Inst.CMP, "CMP", OnParams());
+
 
     private List<string> OnParams()
     {

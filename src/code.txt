@@ -1,7 +1,1 @@
-﻿prt zf
-
-mov eax, 1
-mov ebx, 1
-
-cmp eax, ebx
-prt zf
+﻿
