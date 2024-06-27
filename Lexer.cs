@@ -56,13 +56,9 @@ internal class Lexer
     {
         while (!IsEOF())
         {
-            if (IsEmpty()) 
-            {
-                Current++;
-                continue;
-            }
+            if (!IsEmptyLine()) 
+                Instructions.Add(NextToken());
 
-            Instructions.Add(NextToken());
             Current++;
         }
 
@@ -117,7 +113,7 @@ internal class Lexer
     private string InstructionToken()
         => Source[Current][..3];
 
-    private bool IsEmpty()
+    private bool IsEmptyLine()
         => Source[Current] == "";
 
     private bool IsEOF()

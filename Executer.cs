@@ -3,19 +3,9 @@
 
 internal class Executer
 {
-    private Dictionary<string, int> Registers = new()
+    private readonly Dictionary<string, int> Registers = new()
     {
-        // 32-bit accumulator
-        { "eax", 0 },
-
-        // 32-bit base
-        { "ebx", 0 },
-
-        // 32-bit counter
-        { "ecx", 0 },
-        
-        // 32-bit data
-        { "edx", 0 },
+        { "eax", 0 }, { "ebx", 0 }, { "ecx", 0 }, { "edx", 0 },
     };
 
     public List<Instruction> Instructions { get; set; }
@@ -27,19 +17,16 @@ internal class Executer
         Instructions = instructions;
     }
 
-    public object? Execute() 
+    public void Execute() 
     {
-        object? result = null;
-        while (!IsEOFToken()) 
+        while (!IsEOFInstruction()) 
         {
-            result = ExecuteToken();
+            ExecuteInstruction();
             Current++;
         }
-
-        return result;
     }
 
-    private object ExecuteToken() 
+    private void ExecuteInstruction() 
     {
         _ = Instruction().Type switch
         {
@@ -53,8 +40,6 @@ internal class Executer
 
             _ => throw new Exception("INSTRUCTION NOT REGISTERED")
         };
-
-        return null;
     }
 
     private object ExecuteAdd() 
@@ -63,12 +48,15 @@ internal class Executer
         var reg1 = instruction.Parameters[0];
         var reg2 = instruction.Parameters[1];
 
+        // if object to add is register, add contents...
         if (IsRegister(reg2))
             Registers[reg1] += Registers[reg2];
 
+        // ...otherwise convert to int and add value directly
         else
             Registers[reg1] += Convert.ToInt32(reg2);
-        return null;
+
+        return new object();
     }
 
     private object ExecuteSub()
@@ -77,14 +65,15 @@ internal class Executer
         var reg1 = instruction.Parameters[0];
         var reg2 = instruction.Parameters[1];
 
+        // if object to subtract is register, subtract contents...
         if (IsRegister(reg2))
             Registers[reg1] -= Registers[reg2];
 
+        // ...otherwise convert to int and subtract value directly
         else 
             Registers[reg1] -= Convert.ToInt32(reg2);
 
-
-        return null;
+        return new object();
     }
 
     private object ExecuteMov()
@@ -93,13 +82,15 @@ internal class Executer
         var reg1 = instruction.Parameters[0];
         var reg2 = instruction.Parameters[1];
 
+        // if object to add is register, set contents...
         if (IsRegister(reg2))
             Registers[reg1] = Registers[reg2];
 
+        // ...otherwise convert to int and set value directly
         else
-            Registers[reg1] += Convert.ToInt32(reg2);
+            Registers[reg1] = Convert.ToInt32(reg2);
 
-        return null;
+        return new object();
     }
 
     private object ExecutePrt() 
@@ -107,9 +98,10 @@ internal class Executer
         var instruction = Instruction();    
         var reg1 = instruction.Parameters[0];
 
-        Console.Write($"{reg1.ToUpper()}: {Registers[reg1]}\n");
+        // output the register value
+        Console.Write($"{reg1.ToLower()}: {Registers[reg1]}\n");
 
-        return null;
+        return new object();
     }
 
     private object ExecuteInc() 
@@ -117,18 +109,21 @@ internal class Executer
         var instruction = Instruction();
         var reg1 = instruction.Parameters[0];
 
+        // increment the register value
         Registers[reg1]++;
 
-        return null;
+        return new object();
     }
 
     private object ExecuteDec() 
     {
         var instruction = Instruction();
         var reg1 = instruction.Parameters[0];
+
+        // decrement the register value
         Registers[reg1]--;
 
-        return null;
+        return new object();
     }
 
     private bool IsRegister(string key)
@@ -137,6 +132,6 @@ internal class Executer
     private Instruction Instruction()
         => Instructions[Current]; 
     
-    private bool IsEOFToken() 
+    private bool IsEOFInstruction() 
         => Instructions[Current].Type == InstructionType.EOF;
 }

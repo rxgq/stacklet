@@ -9,12 +9,7 @@ internal class Program
         Lexer lexer = new(code);
         var instructions = lexer.Tokenize();
 
-        foreach (var instruction in instructions)
-            Console.WriteLine(instruction.ToString());
-
         Executer program = new(instructions);
-        var result = program.Execute();
-
-        Console.Write(result);
+        program.Execute();
     }
 }
