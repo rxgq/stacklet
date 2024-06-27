@@ -1,0 +1,25 @@
+﻿jmp fib
+
+fib:
+  mov eax, 1    
+  prt eax      
+  wt 1       
+
+  mov ebx, 1   
+  prt ebx     
+  wt 1      
+
+  mov ecx, 2   
+
+  jmp fib_loop 
+
+fib_loop:
+  add eax, ebx 
+  prt eax      
+  wt 1
+  add ebx, eax
+  prt ebx   
+  wt 1 
+
+  dec ecx    
+  jnz fib_loop, ecx

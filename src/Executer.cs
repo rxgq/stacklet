@@ -54,36 +54,40 @@ internal class Executer
 
         _ = Instruction.Type switch
         {
-            Inst.ADD => ExecuteAdd(),
-            Inst.SUB => ExecuteSub(),
-            Inst.MUL => ExecuteMul(),
-            Inst.DIV => ExecuteDiv(),
-            Inst.INC => ExecuteInc(),
-            Inst.DEC => ExecuteDec(),
+            Inst.ADD  =>  ExecuteAdd(),
+            Inst.SUB  =>  ExecuteSub(),
+            Inst.MUL  =>  ExecuteMul(),
+            Inst.DIV  =>  ExecuteDiv(),
+            Inst.INC  =>  ExecuteInc(),
+            Inst.DEC  =>  ExecuteDec(),
 
-            Inst.AND => ExecuteAnd(),
-            Inst.OR => ExecuteOr(),
-            Inst.XOR => ExecuteXor(),
-            Inst.CMP => ExecuteCmp(),
-            Inst.NOT => ExecuteNot(),
-            Inst.NEG => ExecuteNeg(),
-            Inst.SHL => ExecuteShl(),
-            Inst.SHR => ExecuteShr(),
-            Inst.NOP => null,
+            Inst.AND  =>  ExecuteAnd(),
+            Inst.OR   =>   ExecuteOr(),
+            Inst.XOR  =>  ExecuteXor(),
+            Inst.NOT  =>  ExecuteNot(),
+            Inst.NOR  =>  ExecuteNor(),
+            Inst.XNOR =>  ExecuteXor(),
+            Inst.NAND => ExecuteNand(),
+            Inst.CMP  =>  ExecuteCmp(),
+            Inst.NEG  =>  ExecuteNeg(),
+            Inst.SHL  =>  ExecuteShl(),
+            Inst.SHR  =>  ExecuteShr(),
 
-            Inst.MOV => ExecuteMov(),
-            Inst.PRT => ExecutePrt(),
-            Inst.OUT => ExecuteOut(),
-            Inst.WT => ExecuteWt(),
+            Inst.MOV  =>  ExecuteMov(),
+            Inst.PRT  =>  ExecutePrt(),
+            Inst.OUT  =>  ExecuteOut(),
+            Inst.WT   =>   ExecuteWt(),
 
-            Inst.JMP => ExecuteJmp(),
-            Inst.JNZ => ExecuteJnz(),
-            Inst.RET => ExecuteRet(),
+            Inst.JMP  =>  ExecuteJmp(),
+            Inst.JNZ  =>  ExecuteJnz(),
+            Inst.JZ   =>  ExecuteJz(),
+            Inst.RET  =>  ExecuteRet(),
             Inst.PROC => null, // already pre-processed
 
-            Inst.COMMENT => null,
+            Inst.NOP => null,
 
-            _ => throw new Exception("INSTRUCTION NOT MemoryED")
+            Inst.COMMENT => null,
+            _ => throw new Exception("INSTRUCTION NOT IN MEMORY")
         };
     }
 
@@ -165,6 +169,31 @@ internal class Executer
         else
             Memory[Param1] ^= Convert.ToInt32(Param2); return new object();
     }
+
+    private object ExecuteNand()
+    {
+        if (IsMemory(Param1) && IsMemory(Param2))
+            Memory[Param1] = ~(Memory[Param1] & Memory[Param2]);
+
+        return new object();
+    }
+
+    private object ExecuteNor()
+    {
+        if (IsMemory(Param1) && IsMemory(Param2))
+            Memory[Param1] = ~(Memory[Param1] | Memory[Param2]);
+
+        return new object();
+    }
+
+    private object ExecuteXnor()
+    {
+        if (IsMemory(Param1) && IsMemory(Param2))
+            Memory[Param1] = ~(Memory[Param1] ^ Memory[Param2]);
+
+        return new object();
+    }
+
 
     private object ExecuteCmp() 
     {
@@ -251,17 +280,17 @@ internal class Executer
 
     private object ExecuteJnz()
     {
-        if (IsMemory(Param2))
-        {
-            if (Memory[Param2] != 0)
-                ExecuteJmp();
-        }
-        else
-        {
-            if (Convert.ToInt32(Param2) != 0)
-                ExecuteJmp();
-        }
+        if (Memory["zf"] != 0)
+            ExecuteJmp();
             
+        return new object();
+    }
+
+    private object ExecuteJz() 
+    {
+        if (Memory["zf"] == 0)
+            ExecuteJmp();
+
         return new object();
     }
 

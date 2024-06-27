@@ -1,0 +1,15 @@
+﻿mov eax, 10
+mov ebx, 10
+
+cmp eax, ebx
+
+jnz equal
+jz neq
+
+equal:
+  prt equal
+  ret
+
+neq:
+  prt not_equal
+  ret

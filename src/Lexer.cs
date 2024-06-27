@@ -34,14 +34,23 @@ enum Inst
     // performs logical not on reg1
     NOT, // not <reg1>
 
+    // performs logical nand on reg1 and reg2
+    NAND, // nand <reg1> <reg2>
+
+    // performs logical nor on reg1 and reg2
+    NOR,  // nor <reg1> <reg2>
+
+    // performs logical xnor on reg1 and reg2
+    XNOR, // xnor <reg1> <reg2>
+
     // performs negation on reg1
     NEG, // neg <reg1>
 
-    // peforms a left shift on reg1
-    SHL, // shl <reg1>
+    // peforms a left shift on reg1 for amount
+    SHL, // shl <reg1> <amount>
 
-    // performs a right shift on reg2
-    SHR, // shr <reg1>
+    // performs a right shift on reg2 for amount
+    SHR, // shr <reg1> <amount>
 
     // does nothing, next instruction
     NOP, // nop
@@ -64,13 +73,16 @@ enum Inst
     // jumps to a process
     JMP, // jmp <name>
 
-    // jumps if not zero
+    // jumps to a process if zero flag is not zero
     JNZ, // jnz <name>
+
+    // jumps to a process if zero flag is zero
+    JZ, // jz <name>
 
     // exits the process
     RET, // ret
 
-    // "sleeps" the program
+    // "sleeps" the program for sec
     WT, // wt <sec>
 
     // ignores everything after the ';'
@@ -142,32 +154,37 @@ internal class Lexer
 
         return Instruction switch
         {
-            "add" => OnAdd(),
-            "sub" => OnSub(),
-            "mul" => OnMul(),
-            "div" => OnDiv(),
-            "inc" => OnInc(),
-            "dec" => OnDec(),
+            "add"  =>  OnAdd(),
+            "sub"  =>  OnSub(),
+            "mul"  =>  OnMul(),
+            "div"  =>  OnDiv(),
+            "and"  =>  OnAnd(),
+            "or"   =>   OnOr(),
+            "xor"  =>  OnXor(),
+            "nand" => OnNand(),
+            "xnor" => OnXnor(),
+            "nor"  =>  OnNor(),
+            "shl"  =>  OnShl(),
+            "shr"  =>  OnShr(),
 
-            "and" => OnAnd(),
-            "or"  =>  OnOr(),
-            "xor" => OnXor(),
-            "cmp" => OnCmp(),
-            "not" => OnNot(),
-            "neg" => OnNeg(),
-            "shl" => OnShl(),
-            "shr" => OnShr(),
-            "nop" => OnNop(),
+            "inc"  =>  OnInc(),
+            "dec"  =>  OnDec(),
+            "not"  =>  OnNot(),
+            "neg"  =>  OnNeg(),
 
-            "mov" => OnMov(),
-            "prt" => OnPrt(),
-            "out" => OnOut(),
-            "wt"  =>  OnWt(),
+            "mov"  =>  OnMov(),
+            "jmp"  =>  OnJmp(),
+            "jnz"  =>  OnJnz(),
+            "jz"   =>   OnJz(),
+            "ret"  =>  OnRet(),
+            "cmp"  =>  OnCmp(),
+            "nop"  =>  OnNop(),
+
+            "prt"  =>  OnPrt(),
+            "out"  =>  OnOut(),
+            "wt"   =>   OnWt(),
 
             "proc" => OnProc(),
-            "jmp" => OnJmp(),
-            "jnz" => OnJnz(),
-            "ret" => OnRet(),
 
             _ => new Instruction(Inst.BAD, "", OnParams()),
         };
@@ -199,11 +216,21 @@ internal class Lexer
 
     private Instruction OnXor()
         => new(Inst.XOR, "XOR", OnParams());
+
     private Instruction OnCmp()
         => new(Inst.CMP, "CMP", OnParams());
 
     private Instruction OnNot()
         => new(Inst.NOT, "NOT", OnParams());
+
+    private Instruction OnNand()
+        => new(Inst.NAND,"NAND",OnParams());
+
+    private Instruction OnXnor()
+        => new(Inst.XNOR,"XNOR",OnParams());
+
+    private Instruction OnNor()
+        => new(Inst.NOR, "NOR", OnParams());
 
     private Instruction OnNeg()
         => new(Inst.NEG, "NEG", OnParams());
@@ -237,6 +264,9 @@ internal class Lexer
 
     private Instruction OnJnz()
         => new(Inst.JNZ, "JNZ", OnParams());
+
+    private Instruction OnJz()
+        => new(Inst.JZ,  "JZ",  OnParams());
 
     private Instruction OnRet()
         => new(Inst.RET, "RET", OnParams());
