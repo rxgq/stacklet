@@ -79,6 +79,12 @@ enum Inst
     // jumps to a process if zero flag is zero
     JZ, // jz <name>
 
+    // jumps to a process if sign flag is positive
+    JNS, // jns <name>
+
+    // jumps to a process if sign flag is negative
+    JS, // js <name>
+
     // exits the process
     RET, // ret
 
@@ -176,6 +182,8 @@ internal class Lexer
             "jmp"  =>  OnJmp(),
             "jnz"  =>  OnJnz(),
             "jz"   =>   OnJz(),
+            "js"   =>   OnJs(),
+            "jns"  =>  OnJns(),
             "ret"  =>  OnRet(),
             "cmp"  =>  OnCmp(),
             "nop"  =>  OnNop(),
@@ -267,6 +275,12 @@ internal class Lexer
 
     private Instruction OnJz()
         => new(Inst.JZ,  "JZ",  OnParams());
+
+    private Instruction OnJns()
+        => new(Inst.JNS, "JNS", OnParams());
+
+    private Instruction OnJs()
+        => new(Inst.JS,  "JS",  OnParams());
 
     private Instruction OnRet()
         => new(Inst.RET, "RET", OnParams());

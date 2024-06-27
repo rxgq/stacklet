@@ -5,7 +5,7 @@ internal class Executer
     private readonly Dictionary<string, int> Memory = new()
     {
         { "eax", 0 }, { "ebx", 0 }, { "ecx", 0 }, { "edx", 0 },
-        { "zf", 0 }
+        { "zf",  0 }, { "sf", -0 }
     };
 
     private readonly Dictionary<string, int> Processes = new();
@@ -58,33 +58,35 @@ internal class Executer
             Inst.SUB  =>  ExecuteSub(),
             Inst.MUL  =>  ExecuteMul(),
             Inst.DIV  =>  ExecuteDiv(),
-            Inst.INC  =>  ExecuteInc(),
-            Inst.DEC  =>  ExecuteDec(),
-
             Inst.AND  =>  ExecuteAnd(),
             Inst.OR   =>   ExecuteOr(),
             Inst.XOR  =>  ExecuteXor(),
-            Inst.NOT  =>  ExecuteNot(),
             Inst.NOR  =>  ExecuteNor(),
             Inst.XNOR =>  ExecuteXor(),
             Inst.NAND => ExecuteNand(),
-            Inst.CMP  =>  ExecuteCmp(),
-            Inst.NEG  =>  ExecuteNeg(),
             Inst.SHL  =>  ExecuteShl(),
             Inst.SHR  =>  ExecuteShr(),
 
+            Inst.INC  =>  ExecuteInc(),
+            Inst.DEC  =>  ExecuteDec(),
+            Inst.NOT  =>  ExecuteNot(),
+            Inst.NEG  =>  ExecuteNeg(),
+
+            Inst.CMP  =>  ExecuteCmp(),
+            Inst.JMP  =>  ExecuteJmp(),
+            Inst.JNZ  =>  ExecuteJnz(),
+            Inst.JZ   =>   ExecuteJz(),
+            Inst.JNS  =>  ExecuteJns(),
+            Inst.JS   =>   ExecuteJs(),
+            Inst.RET  =>  ExecuteRet(),
             Inst.MOV  =>  ExecuteMov(),
+            Inst.NOP  =>          null,
+
             Inst.PRT  =>  ExecutePrt(),
             Inst.OUT  =>  ExecuteOut(),
             Inst.WT   =>   ExecuteWt(),
 
-            Inst.JMP  =>  ExecuteJmp(),
-            Inst.JNZ  =>  ExecuteJnz(),
-            Inst.JZ   =>  ExecuteJz(),
-            Inst.RET  =>  ExecuteRet(),
-            Inst.PROC => null, // already pre-processed
-
-            Inst.NOP => null,
+            Inst.PROC =>          null,
 
             Inst.COMMENT => null,
             _ => throw new Exception("INSTRUCTION NOT IN MEMORY")
@@ -289,6 +291,22 @@ internal class Executer
     private object ExecuteJz() 
     {
         if (Memory["zf"] == 0)
+            ExecuteJmp();
+
+        return new object();
+    }
+
+    private object ExecuteJns()
+    {
+        if (Memory["sf"] != -0)
+            ExecuteJmp();
+
+        return new object();
+    }
+
+    private object ExecuteJs()
+    {
+        if (Memory["sf"] == -0)
             ExecuteJmp();
 
         return new object();
