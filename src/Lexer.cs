@@ -1,23 +1,43 @@
-﻿namespace assembly;
+﻿namespace assembly.src;
 
 enum InstructionType
 {
     // adds the two parameters together and stores the result in reg1
-    ADD, // <reg1> <reg2>
+    ADD, // add <reg1> <reg2>
 
     // subtracts reg2 from reg1 and stores in reg1
-    SUB, // <reg1> <reg2>
+    SUB, // sub <reg1> <reg2>
 
-    //  copies content of reg1 to reg2
-    MOV, // <reg1> <reg2>
+    // multiplies reg2 with reg1 and stores in reg1
+    MUL, // mul <reg1> <reg2>
+
+    // divides reg1 by reg2 and stores in reg1
+    DIV, // div <reg1> <reg2>
+
+    // copies content of reg2 to reg1
+    MOV, // mov <reg1> <reg2>
 
     // outputs the value of reg1
-    PRT, // <reg1>
+    PRT, // prt <reg1>
 
-    INC,
-    DEC,
+    // increments the value of reg1
+    INC, // inc <reg1>
 
-    EOF, BAD, COMMENT,
+    // decrements the value of reg1
+    DEC, // dec <reg1>
+
+    AND,
+    OR,
+    XOR,
+
+    // inserted at the end of every program
+    EOF,
+
+    // ignores everything after the ';'
+    COMMENT, // ; this is a comment
+
+    // will cause the program to throw an exception
+    BAD,
 }
 
 internal class Instruction
@@ -36,7 +56,7 @@ internal class Instruction
     }
 
     public override string ToString()
-        => $"Type: {Type, -8} || Ins: {Syntax, -8} || Params: {string.Join(", ", Parameters) ?? ""}";
+        => $"Type: {Type,-8} || Ins: {Syntax,-8} || Params: {string.Join(", ", Parameters) ?? ""}";
 }
 
 internal class Lexer
@@ -56,7 +76,7 @@ internal class Lexer
     {
         while (!IsEOF())
         {
-            if (!IsEmptyLine()) 
+            if (!IsEmptyLine())
                 Instructions.Add(NextToken());
 
             Current++;
@@ -66,19 +86,24 @@ internal class Lexer
         return Instructions;
     }
 
-    private Instruction NextToken() 
+    private Instruction NextToken()
     {
         if (IsComment())
             return new Instruction(InstructionType.COMMENT, "", OnParams());
-
+        
         var x = InstructionToken().ToLower() switch
         {
             "add" => OnAdd(),
             "sub" => OnSub(),
+            "mul" => OnMul(),
+            "div" => OnDiv(),
             "mov" => OnMov(),
             "prt" => OnPrt(),
             "inc" => OnInc(),
             "dec" => OnDec(),
+            "and" => OnAnd(),
+            "or"  =>  OnOr(),
+            "xor" => OnXor(),
 
             _ => new Instruction(InstructionType.BAD, "", OnParams()),
         };
@@ -92,6 +117,12 @@ internal class Lexer
     private Instruction OnSub()
         => new(InstructionType.SUB, "SUB", OnParams());
 
+    private Instruction OnMul()
+        => new(InstructionType.MUL, "MUL", OnParams());
+
+    private Instruction OnDiv()
+        => new(InstructionType.DIV, "DIV", OnParams());
+
     private Instruction OnMov()
         => new(InstructionType.MOV, "MOV", OnParams());
 
@@ -99,19 +130,40 @@ internal class Lexer
         => new(InstructionType.PRT, "PRT", OnParams());
 
     private Instruction OnInc()
-    => new(InstructionType.INC, "INC", OnParams());
+        => new(InstructionType.INC, "INC", OnParams());
 
     private Instruction OnDec()
         => new(InstructionType.DEC, "DEC", OnParams());
 
+    private Instruction OnAnd()
+        => new(InstructionType.AND, "AND", OnParams());
+
+    private Instruction OnOr()
+        => new(InstructionType.OR, "OR", OnParams());
+
+    private Instruction OnXor()
+        => new(InstructionType.XOR, "XOR", OnParams());
+
     private List<string> OnParams()
-        => Source[Current][3..].Split(";")[0].Replace(" ", "").ToLower().Split(",").ToList();
+    {
+        string line = Source[Current].Split(';', 2)[0].Trim();
+
+        if (line.Contains(' '))
+            return line[(line.IndexOf(' ') + 1)..].Split(',').Select(p => p.Trim().ToLower()).ToList();
+        
+        return new List<string>();
+    }
 
     private bool IsComment()
         => Source[Current].Replace(" ", "")[0] == ';';
 
     private string InstructionToken()
-        => Source[Current][..3];
+    {
+        string line = Source[Current].Trim();
+        int endIndex = line.IndexOfAny(new char[] { ' ', ';' });
+
+        return endIndex == 1 ? line : line[..endIndex];
+    }
 
     private bool IsEmptyLine()
         => Source[Current] == "";

@@ -1,8 +1,0 @@
-﻿mov EAX, 10    ; Initialize EAX to 10
-mov EBX, 5     ; Initialize EBX to 5 (lowercase mov)
-add eax, ebx   ; Add EBX (5) to EAX (10), result in EAX
-sub EAX, 3     ; Subtract 3 from EAX
-prt eax        ; Print the value of EAX
-inc EAX        ; Increment EAX by 1
-dec ebx        ; Decrement EBX by 1 (uppercase DEC)
-prt EBX        ; Print the value of EBX
