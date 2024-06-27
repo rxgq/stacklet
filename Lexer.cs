@@ -1,6 +1,6 @@
 ﻿namespace assembly;
 
-enum TokenType
+enum InstructionType
 {
     // adds the two parameters together and stores the result in reg1
     ADD, // <reg1> <reg2>
@@ -8,31 +8,35 @@ enum TokenType
     // subtracts reg2 from reg1 and stores in reg1
     SUB, // <reg1> <reg2>
 
+    //  copies content of reg1 to reg2
+    MOV, // <reg1> <reg2>
+
+
     EOF, BAD
 }
 
-internal class Token
+internal class Instruction
 {
     public List<string> Parameters { get; set; }
 
-    public string Instruction { get; set; }
+    public string Syntax { get; set; }
 
-    public TokenType Type { get; set; }
+    public InstructionType Type { get; set; }
 
-    public Token(TokenType type, string instruction, List<string> parameters)
+    public Instruction(InstructionType type, string instruction, List<string> parameters)
     {
         Type = type;
-        Instruction = instruction;
+        Syntax = instruction;
         Parameters = parameters;
     }
 
     public override string ToString()
-        => $"Type: {Type, -8} || Ins: {Instruction, -8} || Params: {string.Join(", ", Parameters) ?? ""}";
+        => $"Type: {Type, -8} || Ins: {Syntax, -8} || Params: {string.Join(", ", Parameters) ?? ""}";
 }
 
 internal class Lexer
 {
-    public List<Token> Tokens { get; set; } = new();
+    public List<Instruction> Instructions { get; set; } = new();
 
     public string[] Source { get; set; }
 
@@ -43,36 +47,44 @@ internal class Lexer
         Source = source;
     }
 
-    public List<Token> Tokenize()
+    public List<Instruction> Tokenize()
     {
         while (!IsEOF())
         {
-            Tokens.Add(NextToken());
+            Instructions.Add(NextToken());
             Current++;
         }
 
-        Tokens.Add(new Token(TokenType.EOF, "NONE", new List<string>()));
-        return Tokens;
+        Instructions.Add(new Instruction(InstructionType.EOF, "NONE", new List<string>()));
+        return Instructions;
     }
 
-    private Token NextToken() 
+    private Instruction NextToken() 
     {
-        return Source[Current][..3] switch
+        return InstructionToken() switch
         {
             "ADD" => OnAdd(),
             "SUB" => OnSub(),
-            _ => new Token(TokenType.BAD, "", OnParams()),
+            "MOV" => OnMov(),
+
+            _ => new Instruction(InstructionType.BAD, "", OnParams()),
         };
     }
 
-    private Token OnAdd()
-        => new(TokenType.ADD, "ADD", OnParams());
+    private Instruction OnAdd()
+        => new(InstructionType.ADD, "ADD", OnParams());
 
-    private Token OnSub()
-        => new(TokenType.SUB, "SUB", OnParams());
+    private Instruction OnSub()
+        => new(InstructionType.SUB, "SUB", OnParams());
+
+    private Instruction OnMov()
+        => new(InstructionType.MOV, "MOV", OnParams());
 
     private List<string> OnParams()
         => Source[Current][3..].Split(',').ToList();
+
+    private string InstructionToken()
+        => Source[Current][..3];
 
     private bool IsEOF()
         => Current > Source.Length - 1;

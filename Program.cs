@@ -7,9 +7,14 @@ internal class Program
         var code = File.ReadAllLines("C:\\Users\\adunderdale\\Source\\Repos\\assembly\\code.txt");
 
         Lexer lexer = new(code);
-        var tokens = lexer.Tokenize();
+        var instructions = lexer.Tokenize();
 
-        foreach (var token in tokens)
-            Console.WriteLine(token.ToString());
+        foreach (var instruction in instructions)
+            Console.WriteLine(instruction.ToString());
+
+        Executer program = new(instructions);
+        var result = program.Execute();
+
+        Console.Write(result);
     }
 }
