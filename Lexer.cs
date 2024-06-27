@@ -11,6 +11,11 @@ enum InstructionType
     //  copies content of reg1 to reg2
     MOV, // <reg1> <reg2>
 
+    // outputs the value of reg1
+    PRT, // <reg1>
+
+    INC,
+    DEC,
 
     EOF, BAD
 }
@@ -51,6 +56,12 @@ internal class Lexer
     {
         while (!IsEOF())
         {
+            if (IsEmpty()) 
+            {
+                Current++;
+                continue;
+            }
+
             Instructions.Add(NextToken());
             Current++;
         }
@@ -66,6 +77,9 @@ internal class Lexer
             "ADD" => OnAdd(),
             "SUB" => OnSub(),
             "MOV" => OnMov(),
+            "PRT" => OnPrt(),
+            "INC" => OnInc(),
+            "DEC" => OnDec(),
 
             _ => new Instruction(InstructionType.BAD, "", OnParams()),
         };
@@ -80,11 +94,23 @@ internal class Lexer
     private Instruction OnMov()
         => new(InstructionType.MOV, "MOV", OnParams());
 
+    private Instruction OnPrt()
+        => new(InstructionType.PRT, "PRT", OnParams());
+
+    private Instruction OnInc()
+    => new(InstructionType.INC, "INC", OnParams());
+
+    private Instruction OnDec()
+        => new(InstructionType.INC, "DEC", OnParams());
+
     private List<string> OnParams()
-        => Source[Current][3..].Split(',').ToList();
+        => Source[Current][3..].Replace(" ", "").Split(',').ToList();
 
     private string InstructionToken()
         => Source[Current][..3];
+
+    private bool IsEmpty()
+        => Source[Current] == "";
 
     private bool IsEOF()
         => Current > Source.Length - 1;
