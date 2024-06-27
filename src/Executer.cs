@@ -12,6 +12,9 @@ internal class Executer
 
     public int Current { get; set; } = 0;
 
+    public string Param1 => Instruction().Parameters[0];
+    public string Param2 => Instruction().Parameters[1];
+
     public Executer(List<Instruction> instructions)
     {
         Instructions = instructions;
@@ -52,128 +55,96 @@ internal class Executer
 
     private object ExecuteAdd()
     {
-        var instruction = Instruction();
-        var reg1 = instruction.Parameters[0];
-        var reg2 = instruction.Parameters[1];
-
         // if object to add is register, add contents...
-        if (IsRegister(reg2))
-            Registers[reg1] += Registers[reg2];
+        if (IsRegister(Param2))
+            Registers[Param1] += Registers[Param2];
 
         // ...otherwise convert to int and add value directly
         else
-            Registers[reg1] += Convert.ToInt32(reg2);
+            Registers[Param1] += Convert.ToInt32(Param2);
 
         return new object();
     }
 
     private object ExecuteSub()
     {
-        var instruction = Instruction();
-        var reg1 = instruction.Parameters[0];
-        var reg2 = instruction.Parameters[1];
-
         // if object to subtract is register, subtract contents...
-        if (IsRegister(reg2))
-            Registers[reg1] -= Registers[reg2];
+        if (IsRegister(Param2))
+            Registers[Param1] -= Registers[Param2];
 
         // ...otherwise convert to int and subtract value directly
         else
-            Registers[reg1] -= Convert.ToInt32(reg2);
+            Registers[Param1] -= Convert.ToInt32(Param2);
 
         return new object();
     }
 
     private object ExecuteMul()
     {
-        var instruction = Instruction();
-        var reg1 = instruction.Parameters[0];
-        var reg2 = instruction.Parameters[1];
-
         // if object to multiply is register, multiply contents...
-        if (IsRegister(reg2))
-            Registers[reg1] *= Registers[reg2];
+        if (IsRegister(Param2))
+            Registers[Param1] *= Registers[Param2];
 
         // ...otherwise convert to int and multiply value directly
         else
-            Registers[reg1] *= Convert.ToInt32(reg2);
+            Registers[Param1] *= Convert.ToInt32(Param2);
 
         return new object();
     }
     private object ExecuteDiv()
     {
-        var instruction = Instruction();
-        var reg1 = instruction.Parameters[0];
-        var reg2 = instruction.Parameters[1];
-
         // if object to subtract is register, divide contents...
-        if (IsRegister(reg2))
-            Registers[reg1] /= Registers[reg2];
+        if (IsRegister(Param2))
+            Registers[Param1] /= Registers[Param2];
 
         // ...otherwise convert to int and divide value directly
         else
-            Registers[reg1] /= Convert.ToInt32(reg2);
+            Registers[Param1] /= Convert.ToInt32(Param2);
 
         return new object();
     }
 
     private object ExecuteInc()
     {
-        var instruction = Instruction();
-        var reg1 = instruction.Parameters[0];
-
         // increment the register value
-        Registers[reg1]++;
+        Registers[Param1]++;
 
         return new object();
     }
 
     private object ExecuteDec()
     {
-        var instruction = Instruction();
-        var reg1 = instruction.Parameters[0];
-
         // decrement the register value
-        Registers[reg1]--;
+        Registers[Param1]--;
 
         return new object();
     }
 
     private object ExecuteMov()
     {
-        var instruction = Instruction();
-        var reg1 = instruction.Parameters[0];
-        var reg2 = instruction.Parameters[1];
-
         // if object to add is register, set contents...
-        if (IsRegister(reg2))
-            Registers[reg1] = Registers[reg2];
+        if (IsRegister(Param2))
+            Registers[Param1] = Registers[Param2];
 
         // ...otherwise convert to int and set value directly
         else
-            Registers[reg1] = Convert.ToInt32(reg2);
+            Registers[Param1] = Convert.ToInt32(Param2);
 
         return new object();
     }
 
     private object ExecutePrt()
     {
-        var instruction = Instruction();
-        var reg1 = instruction.Parameters[0];
-
         // output the register value
-        Console.Write($"{reg1.ToLower()}: {Registers[reg1]}\n");
+        Console.Write($"{Param1.ToLower()}: {Registers[Param1]}\n");
 
         return new object();
     }
 
     private object ExecuteAnd()
     {
-        var instruction = Instruction();
-        var reg1 = instruction.Parameters[0];
-        var reg2 = instruction.Parameters[1];
-
-        Registers[reg1] &= Registers[reg2];
+        // apply logical and
+        Registers[Param1] &= Registers[Param2];
 
         return new object();
     }
@@ -181,34 +152,22 @@ internal class Executer
 
     private object ExecuteOr()
     {
-        var instruction = Instruction();
-        var reg1 = instruction.Parameters[0];
-        var reg2 = instruction.Parameters[1];
-
-        Registers[reg1] |= Registers[reg2];
+        // apply logical or
+        Registers[Param1] |= Registers[Param2];
 
         return new object();
     }
 
     private object ExecuteXor()
     {
-        var instruction = Instruction();
-        var reg1 = instruction.Parameters[0];
-        var reg2 = instruction.Parameters[1];
-
-        Registers[reg1] ^= Registers[reg2];
+        // apply logical xor
+        Registers[Param1] ^= Registers[Param2];
 
         return new object();
     }
 
     private bool IsRegister(string key)
         => Registers.ContainsKey(key);
-
-    private string? Param1()
-        => Instruction().Parameters[0];
-
-    private string? Param2()
-    => Instruction().Parameters[1];
 
     private Instruction Instruction()
         => Instructions[Current];
