@@ -11,8 +11,8 @@ internal class Program
         Lexer lexer = new(code);
         var instructions = lexer.Tokenize();
 
-        foreach (var inst in instructions)
-            Console.WriteLine(inst.ToString());
+/*        foreach (var inst in instructions)
+            Console.WriteLine(inst.ToString());*/
 
         Executer program = new(instructions);
         program.Execute();

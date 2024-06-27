@@ -45,6 +45,13 @@ internal class Executer
 
     private void ExecuteInstruction()
     {
+        if (CallStack.Count == 0 && Instruction.Type == Inst.PROC) 
+        {
+            Pointer--;
+            return;
+        }
+            
+
         _ = Instruction.Type switch
         {
             Inst.ADD => ExecuteAdd(),
@@ -61,6 +68,7 @@ internal class Executer
             Inst.MOV => ExecuteMov(),
             Inst.PRT => ExecutePrt(),
             Inst.OUT => ExecuteOut(),
+            Inst.WT => ExecuteWt(),
 
             Inst.JMP => ExecuteJmp(),
             Inst.RET => ExecuteRet(),
@@ -124,32 +132,6 @@ internal class Executer
         return new object();
     }
 
-    private object ExecuteMov()
-    {
-        if (IsRegister(Param2))
-            Registers[Param1] = Registers[Param2];
-        else
-            Registers[Param1] = Convert.ToInt32(Param2);
-
-        return new object();
-    }
-
-    private object ExecutePrt()
-    {
-        if (IsRegister(Param1))
-            Console.Write($"{Param1.ToLower()}: {Registers[Param1]}\n");
-        else
-            Console.Write($" {Param1}");
-
-        return new object();
-    }
-
-    private object ExecuteOut()
-    {
-        Console.WriteLine($"{Param1}: {Convert.ToString(Registers[Param1], 2).PadLeft(32, '0')}");
-        return new object();
-    }
-
     private object ExecuteAnd()
     {
         Registers[Param1] &= Registers[Param2];
@@ -168,12 +150,42 @@ internal class Executer
         return new object();
     }
 
+    private object ExecuteMov()
+    {
+        if (IsRegister(Param2))
+            Registers[Param1] = Registers[Param2];
+        else
+            Registers[Param1] = Convert.ToInt32(Param2);
+
+        return new object();
+    }
+
+    private object ExecutePrt()
+    {
+        if (IsRegister(Param1))
+            Console.WriteLine($"{Param1.ToLower()}: {Registers[Param1]}\n");
+        else
+            Console.WriteLine($" {Param1}");
+
+        return new object();
+    }
+
+    private object ExecuteOut()
+    {
+        Console.WriteLine($"{Param1}: {Convert.ToString(Registers[Param1], 2).PadLeft(32, '0')}");
+        return new object();
+    }
+
+    private object ExecuteWt() 
+    {
+        Thread.Sleep(Convert.ToInt32(Param1) * 1000);
+        return new object();
+    }
+
     private object ExecuteRet()
     {
         if (CallStack.Count > 0)
-        {
             Pointer = CallStack.Pop();
-        }
 
         return new object();
     }

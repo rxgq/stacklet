@@ -49,6 +49,9 @@ enum Inst
     // exits the process
     RET, // ret
 
+    // "sleeps" the program
+    WT, // wt <sec>
+
     // ignores everything after the ';'
     COMMENT, // ; this is a comment
 
@@ -132,6 +135,7 @@ internal class Lexer
             "mov" => OnMov(),
             "prt" => OnPrt(),
             "out" => OnOut(),
+            "wt"  =>  OnWt(),
 
             "proc" => OnProc(),
             "jmp" => OnJmp(),
@@ -185,6 +189,9 @@ internal class Lexer
 
     private Instruction OnRet()
         => new(Inst.RET, "RET", OnParams());
+
+    private Instruction OnWt()
+        => new(Inst.WT, "WT", OnParams());
 
     private List<string> OnParams()
     {
