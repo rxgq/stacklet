@@ -31,6 +31,9 @@ enum Inst
     // performs logical xor on reg1 and reg2
     XOR, // xor <reg1> <reg2>
 
+    // checks reg1 against reg2, sets zero flag to result
+    CMP, // cmp <reg1> <reg2>
+
     // copies content of reg2 to reg1
     MOV, // mov <reg1> <reg2>
 
@@ -134,6 +137,7 @@ internal class Lexer
             "and" => OnAnd(),
             "or"  =>  OnOr(),
             "xor" => OnXor(),
+            "cmp" => OnCmp(),
 
             "mov" => OnMov(),
             "prt" => OnPrt(),
@@ -199,7 +203,8 @@ internal class Lexer
 
     private Instruction OnRet()
         => new(Inst.RET, "RET", OnParams());
-
+    private Instruction OnCmp()
+        => new(Inst.CMP, "CMP", OnParams());
 
     private List<string> OnParams()
     {

@@ -2,9 +2,10 @@
 
 internal class Executer
 {
-    private readonly Dictionary<string, int> Registers = new()
+    private readonly Dictionary<string, int> Memory = new()
     {
         { "eax", 0 }, { "ebx", 0 }, { "ecx", 0 }, { "edx", 0 },
+        { "zf", 0 }
     };
 
     private readonly Dictionary<string, int> Processes = new();
@@ -63,6 +64,7 @@ internal class Executer
             Inst.AND => ExecuteAnd(),
             Inst.OR => ExecuteOr(),
             Inst.XOR => ExecuteXor(),
+            Inst.CMP => ExecuteCmp(),
 
             Inst.MOV => ExecuteMov(),
             Inst.PRT => ExecutePrt(),
@@ -76,103 +78,109 @@ internal class Executer
 
             Inst.COMMENT => null,
 
-            _ => throw new Exception("INSTRUCTION NOT REGISTERED")
+            _ => throw new Exception("INSTRUCTION NOT MemoryED")
         };
     }
 
     private object ExecuteAdd()
     {
-        if (IsRegister(Param2))
-            Registers[Param1] += Registers[Param2];
+        if (IsMemory(Param2))
+            Memory[Param1] += Memory[Param2];
         else
-            Registers[Param1] += Convert.ToInt32(Param2);
+            Memory[Param1] += Convert.ToInt32(Param2);
 
         return new object();
     }
 
     private object ExecuteSub()
     {
-        if (IsRegister(Param2))
-            Registers[Param1] -= Registers[Param2];
+        if (IsMemory(Param2))
+            Memory[Param1] -= Memory[Param2];
         else
-            Registers[Param1] -= Convert.ToInt32(Param2);
+            Memory[Param1] -= Convert.ToInt32(Param2);
 
         return new object();
     }
 
     private object ExecuteMul()
     {
-        if (IsRegister(Param2))
-            Registers[Param1] *= Registers[Param2];
+        if (IsMemory(Param2))
+            Memory[Param1] *= Memory[Param2];
         else
-            Registers[Param1] *= Convert.ToInt32(Param2);
+            Memory[Param1] *= Convert.ToInt32(Param2);
 
         return new object();
     }
 
     private object ExecuteDiv()
     {
-        if (IsRegister(Param2))
-            Registers[Param1] /= Registers[Param2];
+        if (IsMemory(Param2))
+            Memory[Param1] /= Memory[Param2];
         else
-            Registers[Param1] /= Convert.ToInt32(Param2);
+            Memory[Param1] /= Convert.ToInt32(Param2);
 
         return new object();
     }
 
     private object ExecuteInc()
     {
-        Registers[Param1]++;
+        Memory[Param1]++;
         return new object();
     }
 
     private object ExecuteDec()
     {
-        Registers[Param1]--;
+        Memory[Param1]--;
         return new object();
     }
 
     private object ExecuteAnd()
     {
-        if (IsRegister(Param2))
-            Registers[Param1] &= Registers[Param2];
+        if (IsMemory(Param2))
+            Memory[Param1] &= Memory[Param2];
         else
-            Registers[Param1] &= Convert.ToInt32(Param2);
+            Memory[Param1] &= Convert.ToInt32(Param2);
 
         return new object();
     }
 
     private object ExecuteOr()
     {
-        if (IsRegister(Param2))
-            Registers[Param1] |= Registers[Param2];
+        if (IsMemory(Param2))
+            Memory[Param1] |= Memory[Param2];
         else
-            Registers[Param1] |= Convert.ToInt32(Param2);
+            Memory[Param1] |= Convert.ToInt32(Param2);
         return new object();
     }
 
     private object ExecuteXor()
     {
-        if (IsRegister(Param2))
-            Registers[Param1] ^= Registers[Param2];
+        if (IsMemory(Param2))
+            Memory[Param1] ^= Memory[Param2];
         else
-            Registers[Param1] ^= Convert.ToInt32(Param2); return new object();
+            Memory[Param1] ^= Convert.ToInt32(Param2); return new object();
+    }
+
+    private object ExecuteCmp() 
+    {
+        Memory["zf"] = Memory[Param1] == Memory[Param2] ? 1 : 0;
+        return new object();
     }
 
     private object ExecuteMov()
     {
-        if (IsRegister(Param2))
-            Registers[Param1] = Registers[Param2];
+        if (IsMemory(Param2))
+            Memory[Param1] = Memory[Param2];
         else
-            Registers[Param1] = Convert.ToInt32(Param2);
+            Memory[Param1] = Convert.ToInt32(Param2);
 
         return new object();
     }
 
     private object ExecutePrt()
     {
-        if (IsRegister(Param1))
-            Console.WriteLine($"{Param1.ToLower()}: {Registers[Param1]}\n");
+        if (IsMemory(Param1))
+            Console.WriteLine($"{Param1.ToLower()}: {Memory[Param1]}\n");
         else
             Console.WriteLine($" {Param1}");
 
@@ -181,7 +189,7 @@ internal class Executer
 
     private object ExecuteOut()
     {
-        Console.WriteLine($"{Param1}: {Convert.ToString(Registers[Param1], 2).PadLeft(32, '0')}");
+        Console.WriteLine($"{Param1}: {Convert.ToString(Memory[Param1], 2).PadLeft(32, '0')}");
         return new object();
     }
 
@@ -212,9 +220,9 @@ internal class Executer
 
     private object ExecuteJnz()
     {
-        if (IsRegister(Param2))
+        if (IsMemory(Param2))
         {
-            if (Registers[Param2] != 0)
+            if (Memory[Param2] != 0)
                 ExecuteJmp();
         }
         else
@@ -223,12 +231,11 @@ internal class Executer
                 ExecuteJmp();
         }
             
-
         return new object();
     }
 
-    private bool IsRegister(string key)
-        => Registers.ContainsKey(key);
+    private bool IsMemory(string key)
+        => Memory.ContainsKey(key);
 
     private bool IsEOFInstruction()
         => Instructions[Pointer].Type == Inst.EOF;

@@ -1,12 +1,7 @@
-﻿jmp main
+﻿prt zf
 
-main:
-  mov eax, 5
-  jmp dec_num
-  ret
+mov eax, 1
+mov ebx, 1
 
-dec_num:
-  dec eax
-  prt eax
-  jnz dec_num, eax
-  ret
+cmp eax, ebx
+prt zf
