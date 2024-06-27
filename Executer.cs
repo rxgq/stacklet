@@ -6,16 +6,16 @@ internal class Executer
     private Dictionary<string, int> Registers = new()
     {
         // 32-bit accumulator
-        { "EAX", 0 },
+        { "eax", 0 },
 
         // 32-bit base
-        { "EBX", 0 },
+        { "ebx", 0 },
 
         // 32-bit counter
-        { "ECX", 0 },
+        { "ecx", 0 },
         
         // 32-bit data
-        { "EDX", 0 },
+        { "edx", 0 },
     };
 
     public List<Instruction> Instructions { get; set; }
@@ -49,6 +49,7 @@ internal class Executer
             InstructionType.PRT => ExecutePrt(),
             InstructionType.INC => ExecuteInc(),
             InstructionType.DEC => ExecuteDec(),
+            InstructionType.COMMENT => null,
 
             _ => throw new Exception("INSTRUCTION NOT REGISTERED")
         };
@@ -59,16 +60,28 @@ internal class Executer
     private object ExecuteAdd() 
     {
         var instruction = Instruction();
-
         var reg1 = instruction.Parameters[0];
         var reg2 = instruction.Parameters[1];
 
-        Registers[reg1] = Registers[reg2];
+        if (IsRegister(reg2))
+            Registers[reg1] += Registers[reg2];
+
+        else
+            Registers[reg1] += Convert.ToInt32(reg2);
         return null;
     }
 
     private object ExecuteSub()
     {
+        var instruction = Instruction();
+        var reg1 = instruction.Parameters[0];
+        var reg2 = instruction.Parameters[1];
+
+        if (IsRegister(reg2))
+            Registers[reg1] -= Registers[reg2];
+
+        else 
+            Registers[reg1] -= Convert.ToInt32(reg2);
 
 
         return null;
@@ -80,7 +93,12 @@ internal class Executer
         var reg1 = instruction.Parameters[0];
         var reg2 = instruction.Parameters[1];
 
-        Registers[reg2] = Registers[reg1];
+        if (IsRegister(reg2))
+            Registers[reg1] = Registers[reg2];
+
+        else
+            Registers[reg1] += Convert.ToInt32(reg2);
+
         return null;
     }
 
@@ -89,7 +107,8 @@ internal class Executer
         var instruction = Instruction();    
         var reg1 = instruction.Parameters[0];
 
-        Console.Write(Registers[reg1]);
+        Console.Write($"{reg1.ToUpper()}: {Registers[reg1]}\n");
+
         return null;
     }
 
@@ -97,6 +116,7 @@ internal class Executer
     {
         var instruction = Instruction();
         var reg1 = instruction.Parameters[0];
+
         Registers[reg1]++;
 
         return null;
@@ -110,6 +130,9 @@ internal class Executer
 
         return null;
     }
+
+    private bool IsRegister(string key)
+        => Registers.ContainsKey(key);
 
     private Instruction Instruction()
         => Instructions[Current]; 

@@ -17,7 +17,7 @@ enum InstructionType
     INC,
     DEC,
 
-    EOF, BAD
+    EOF, BAD, COMMENT,
 }
 
 internal class Instruction
@@ -72,17 +72,22 @@ internal class Lexer
 
     private Instruction NextToken() 
     {
-        return InstructionToken() switch
+        if (IsComment())
+            return new Instruction(InstructionType.COMMENT, "", OnParams());
+
+        var x = InstructionToken().ToLower() switch
         {
-            "ADD" => OnAdd(),
-            "SUB" => OnSub(),
-            "MOV" => OnMov(),
-            "PRT" => OnPrt(),
-            "INC" => OnInc(),
-            "DEC" => OnDec(),
+            "add" => OnAdd(),
+            "sub" => OnSub(),
+            "mov" => OnMov(),
+            "prt" => OnPrt(),
+            "inc" => OnInc(),
+            "dec" => OnDec(),
 
             _ => new Instruction(InstructionType.BAD, "", OnParams()),
         };
+
+        return x;
     }
 
     private Instruction OnAdd()
@@ -101,10 +106,13 @@ internal class Lexer
     => new(InstructionType.INC, "INC", OnParams());
 
     private Instruction OnDec()
-        => new(InstructionType.INC, "DEC", OnParams());
+        => new(InstructionType.DEC, "DEC", OnParams());
 
     private List<string> OnParams()
-        => Source[Current][3..].Replace(" ", "").Split(',').ToList();
+        => Source[Current][3..].Split(";")[0].Replace(" ", "").ToLower().Split(",").ToList();
+
+    private bool IsComment()
+        => Source[Current].Replace(" ", "")[0] == ';';
 
     private string InstructionToken()
         => Source[Current][..3];
