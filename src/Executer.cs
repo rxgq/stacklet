@@ -2,10 +2,14 @@
 
 internal class Executer
 {
-    private readonly Dictionary<string, int> Memory = new()
+    private readonly Dictionary<string, uint> Memory = new()
     {
-        { "eax", 0 }, { "ebx", 0 }, { "ecx", 0 }, { "edx", 0 },
-        { "zf",  0 }, { "sf", -0 }
+        { "rax", 0 }, { "rbx", 0 },{ "rcx", 0 },{ "rdx", 0 },
+    };
+
+    private readonly Dictionary<string, int> Flags = new()
+    {
+        { "zf", 0 },{ "sf", -0 }
     };
 
     private readonly Dictionary<string, int> Processes = new();
@@ -98,7 +102,7 @@ internal class Executer
         if (IsMemory(Param2))
             Memory[Param1] += Memory[Param2];
         else
-            Memory[Param1] += Convert.ToInt32(Param2);
+            Memory[Param1] += Convert.ToUInt32(Param2);
 
         return new object();
     }
@@ -108,7 +112,7 @@ internal class Executer
         if (IsMemory(Param2))
             Memory[Param1] -= Memory[Param2];
         else
-            Memory[Param1] -= Convert.ToInt32(Param2);
+            Memory[Param1] -= Convert.ToUInt32(Param2);
 
         return new object();
     }
@@ -118,7 +122,7 @@ internal class Executer
         if (IsMemory(Param2))
             Memory[Param1] *= Memory[Param2];
         else
-            Memory[Param1] *= Convert.ToInt32(Param2);
+            Memory[Param1] *= Convert.ToUInt32(Param2);
 
         return new object();
     }
@@ -128,7 +132,7 @@ internal class Executer
         if (IsMemory(Param2))
             Memory[Param1] /= Memory[Param2];
         else
-            Memory[Param1] /= Convert.ToInt32(Param2);
+            Memory[Param1] /= Convert.ToUInt32(Param2);
 
         return new object();
     }
@@ -150,7 +154,7 @@ internal class Executer
         if (IsMemory(Param2))
             Memory[Param1] &= Memory[Param2];
         else
-            Memory[Param1] &= Convert.ToInt32(Param2);
+            Memory[Param1] &= Convert.ToUInt32(Param2);
 
         return new object();
     }
@@ -160,7 +164,7 @@ internal class Executer
         if (IsMemory(Param2))
             Memory[Param1] |= Memory[Param2];
         else
-            Memory[Param1] |= Convert.ToInt32(Param2);
+            Memory[Param1] |= Convert.ToUInt32(Param2);
         return new object();
     }
 
@@ -169,7 +173,7 @@ internal class Executer
         if (IsMemory(Param2))
             Memory[Param1] ^= Memory[Param2];
         else
-            Memory[Param1] ^= Convert.ToInt32(Param2); return new object();
+            Memory[Param1] ^= Convert.ToUInt32(Param2); return new object();
     }
 
     private object ExecuteNand()
@@ -199,7 +203,7 @@ internal class Executer
 
     private object ExecuteCmp() 
     {
-        Memory["zf"] = Memory[Param1] == Memory[Param2] ? 1 : 0;
+        Flags["zf"] = Memory[Param1] == Memory[Param2] ? 1 : 0;
         return new object();
     }
 
@@ -211,7 +215,7 @@ internal class Executer
 
     private object ExecuteNeg()
     {
-        Memory[Param1] = -Memory[Param1];
+        Memory[Param1] = (uint)-Memory[Param1];
         return new object();
     }
 
@@ -232,7 +236,7 @@ internal class Executer
         if (IsMemory(Param2))
             Memory[Param1] = Memory[Param2];
         else
-            Memory[Param1] = Convert.ToInt32(Param2);
+            Memory[Param1] = Convert.ToUInt32(Param2);
 
         return new object();
     }
@@ -282,7 +286,7 @@ internal class Executer
 
     private object ExecuteJnz()
     {
-        if (Memory["zf"] != 0)
+        if (Flags["zf"] != 0)
             ExecuteJmp();
             
         return new object();
@@ -290,7 +294,7 @@ internal class Executer
 
     private object ExecuteJz() 
     {
-        if (Memory["zf"] == 0)
+        if (Flags["zf"] == 0)
             ExecuteJmp();
 
         return new object();
@@ -298,7 +302,7 @@ internal class Executer
 
     private object ExecuteJns()
     {
-        if (Memory["sf"] != -0)
+        if (Flags["sf"] != -0)
             ExecuteJmp();
 
         return new object();
@@ -306,7 +310,7 @@ internal class Executer
 
     private object ExecuteJs()
     {
-        if (Memory["sf"] == -0)
+        if (Flags["sf"] == -0)
             ExecuteJmp();
 
         return new object();
