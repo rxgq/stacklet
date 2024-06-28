@@ -92,6 +92,7 @@ internal class Executer
 
             Inst.PROC =>          null,
 
+
             Inst.COMMENT => null,
             _ => throw new Exception("INSTRUCTION NOT IN MEMORY")
         };

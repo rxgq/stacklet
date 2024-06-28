@@ -4,7 +4,7 @@ namespace assembly.src;
 
 enum Inst
 {
-    // adds the two parameters together and stores the result in reg1
+    // adds reg1 with reg2 and stores the result in reg1
     ADD, // add <reg1> <reg2>
 
     // subtracts reg2 from reg1 and stores in reg1
@@ -101,35 +101,14 @@ enum Inst
     BAD,
 }
 
-internal class Instruction
-{
-    public List<string> Parameters { get; set; }
-    public string Syntax { get; set; }
-    public Inst Type { get; set; }
-    public string? Identifier { get; set; }
-
-    public Instruction(Inst type, string syntax, List<string> parameters, string? identifier = null)
-    {
-        Type = type;
-        Syntax = syntax;
-        Parameters = parameters;
-        Identifier = identifier;
-    }
-
-    public override string ToString()
-        => $"type: {Type,-12} || inst: {Syntax,-12} || params: {string.Join(", ", Parameters) ?? "",-12} || ident: {Identifier}";
-}
-
 internal class Lexer
 {
     public List<Instruction> Instructions { get; set; } = new();
-
     public string[] Source { get; set; }
-
     public int Current { get; set; } = 0;
-
     
     public string Instruction => InstructionToken().ToLower();
+    public List<string> Parameters => OnParams();
 
     public Lexer(string[] source)
     {
@@ -146,7 +125,7 @@ internal class Lexer
             Current++;
         }
 
-        Instructions.Add(new Instruction(Inst.EOF, "NONE", new List<string>()));
+        Instructions.Add(new Instruction(Inst.EOF, "", new List<string>()));
         return Instructions;
     }
 
@@ -160,131 +139,43 @@ internal class Lexer
 
         return Instruction switch
         {
-            "add"  =>  OnAdd(),
-            "sub"  =>  OnSub(),
-            "mul"  =>  OnMul(),
-            "div"  =>  OnDiv(),
-            "and"  =>  OnAnd(),
-            "or"   =>   OnOr(),
-            "xor"  =>  OnXor(),
-            "nand" => OnNand(),
-            "xnor" => OnXnor(),
-            "nor"  =>  OnNor(),
-            "shl"  =>  OnShl(),
-            "shr"  =>  OnShr(),
+            "add"  => new(Inst.ADD, "ADD", Parameters),
+            "sub"  => new(Inst.SUB, "SUB", Parameters),
+            "mul"  => new(Inst.MUL, "MUL", Parameters),
+            "div"  => new(Inst.DIV, "DIV", Parameters),
+            "and"  => new(Inst.AND, "AND", Parameters),
+            "or"   => new(Inst.OR,  "OR",  Parameters),
+            "xor"  => new(Inst.XOR, "XOR", Parameters),
+            "nand" => new(Inst.NAND,"NAND",Parameters),
+            "xnor" => new(Inst.XNOR,"XNOR",Parameters),
+            "nor"  => new(Inst.NOR, "NOR", Parameters),
+            "shl"  => new(Inst.SHL, "SHL", Parameters),
+            "shr"  => new(Inst.SHR, "SHR", Parameters),
 
-            "inc"  =>  OnInc(),
-            "dec"  =>  OnDec(),
-            "not"  =>  OnNot(),
-            "neg"  =>  OnNeg(),
+            "inc"  => new(Inst.INC, "INC", Parameters),
+            "dec"  => new(Inst.DEC, "DEC", Parameters),
+            "not"  => new(Inst.NOT, "NOT", Parameters),
+            "neg"  => new(Inst.NEG, "NEG", Parameters),
 
-            "mov"  =>  OnMov(),
-            "jmp"  =>  OnJmp(),
-            "jnz"  =>  OnJnz(),
-            "jz"   =>   OnJz(),
-            "js"   =>   OnJs(),
-            "jns"  =>  OnJns(),
-            "ret"  =>  OnRet(),
-            "cmp"  =>  OnCmp(),
-            "nop"  =>  OnNop(),
+            "mov"  => new(Inst.MOV, "MOV", Parameters),
+            "jmp"  => new(Inst.JMP, "JMP", Parameters),
+            "jnz"  => new(Inst.JNZ, "JNZ", Parameters),
+            "jz"   => new(Inst.JZ,  "JZ",  Parameters),
+            "js"   => new(Inst.JS,  "JS",  Parameters),
+            "jns"  => new(Inst.JNS, "JNS", Parameters),
+            "ret"  => new(Inst.RET, "RET", Parameters),
+            "cmp"  => new(Inst.CMP, "CMP", Parameters),
+            "nop"  => new(Inst.NOP, "NOP", Parameters),
 
-            "prt"  =>  OnPrt(),
-            "out"  =>  OnOut(),
-            "wt"   =>   OnWt(),
+            "prt"  => new(Inst.PRT, "PRT", Parameters),
+            "out"  => new(Inst.OUT, "OUT", Parameters),
+            "wt"   => new(Inst.WT,  "WT",  Parameters),
 
-            "proc" => OnProc(),
+            "proc" => new(Inst.PROC,"PROC",Parameters),
 
-            _ => new Instruction(Inst.BAD, "", OnParams()),
+            _      => new(Inst.BAD, "",    Parameters),
         };
     }
-
-    private Instruction OnAdd()
-        => new(Inst.ADD, "ADD", OnParams());
-
-    private Instruction OnSub()
-        => new(Inst.SUB, "SUB", OnParams());
-
-    private Instruction OnMul()
-        => new(Inst.MUL, "MUL", OnParams());
-
-    private Instruction OnDiv()
-        => new(Inst.DIV, "DIV", OnParams());
-
-    private Instruction OnInc()
-        => new(Inst.INC, "INC", OnParams());
-
-    private Instruction OnDec()
-        => new(Inst.DEC, "DEC", OnParams());
-
-    private Instruction OnAnd()
-        => new(Inst.AND, "AND", OnParams());
-
-    private Instruction OnOr()
-        => new(Inst.OR,  "OR",  OnParams());
-
-    private Instruction OnXor()
-        => new(Inst.XOR, "XOR", OnParams());
-
-    private Instruction OnCmp()
-        => new(Inst.CMP, "CMP", OnParams());
-
-    private Instruction OnNot()
-        => new(Inst.NOT, "NOT", OnParams());
-
-    private Instruction OnNand()
-        => new(Inst.NAND,"NAND",OnParams());
-
-    private Instruction OnXnor()
-        => new(Inst.XNOR,"XNOR",OnParams());
-
-    private Instruction OnNor()
-        => new(Inst.NOR, "NOR", OnParams());
-
-    private Instruction OnNeg()
-        => new(Inst.NEG, "NEG", OnParams());
-
-    private Instruction OnShl()
-        => new(Inst.SHL, "SHL", OnParams());
-
-    private Instruction OnShr()
-        => new(Inst.SHR, "SHR", OnParams());
-
-    private Instruction OnNop()
-        => new(Inst.NOP, "NOP", OnParams());
-
-    private Instruction OnMov()
-        => new(Inst.MOV, "MOV", OnParams());
-
-    private Instruction OnPrt()
-        => new(Inst.PRT, "PRT", OnParams());
-
-    private Instruction OnOut()
-        => new(Inst.OUT, "OUT", OnParams());
-
-    private Instruction OnWt()
-        => new(Inst.WT,  "WT",  OnParams());
-
-    private Instruction OnProc()
-        => new(Inst.PROC,"PROC",OnParams()); 
-    
-    private Instruction OnJmp()
-        => new(Inst.JMP, "JMP", OnParams());
-
-    private Instruction OnJnz()
-        => new(Inst.JNZ, "JNZ", OnParams());
-
-    private Instruction OnJz()
-        => new(Inst.JZ,  "JZ",  OnParams());
-
-    private Instruction OnJns()
-        => new(Inst.JNS, "JNS", OnParams());
-
-    private Instruction OnJs()
-        => new(Inst.JS,  "JS",  OnParams());
-
-    private Instruction OnRet()
-        => new(Inst.RET, "RET", OnParams());
-
 
     private List<string> OnParams()
     {
@@ -318,7 +209,7 @@ internal class Lexer
         => Source[Current].Split(";")[0].Trim()[^1] == ':';
 
     private string ProcIdentifier() 
-        => Source[Current].Trim().Replace(":", "");
+        => Source[Current].Replace(" ", "").Split(";")[0][..^1];
 
     private bool IsEOF()
         => Current > Source.Length - 1;

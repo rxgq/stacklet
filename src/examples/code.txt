@@ -1,5 +1,5 @@
 ﻿mov eax, 10
-mov ebx, 102
+mov ebx, 10
 
 cmp eax, ebx
 
