@@ -1,5 +1,41 @@
 ﻿namespace assembly.src;
 
+enum Inst
+{
+    ADD,
+    SUB,
+    MUL,
+    DIV,
+    INC,
+    DEC,
+    AND,
+    OR,
+    XOR,
+    NOT,
+    NAND,
+    NOR,
+    XNOR,
+    NEG,
+    SHL,
+    SHR,
+    NOP,
+    CMP,
+    MOV,
+    PRT,
+    OUT,
+    PROC,
+    JMP,
+    JNZ,
+    JZ,
+    JNS,
+    JS,
+    RET,
+    WT,
+    COMMENT,
+    EOF,
+    BAD,
+}
+
 internal class Instruction
 {
     public List<string> Parameters { get; set; }
