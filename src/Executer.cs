@@ -2,7 +2,7 @@
 
 internal class Executer
 {
-    private readonly Dictionary<string, uint> Memory = new()
+    private readonly Dictionary<string, int> Memory = new()
     {
         { "rax", 0 }, { "rbx", 0 },{ "rcx", 0 },{ "rdx", 0 },
     };
@@ -66,7 +66,7 @@ internal class Executer
             Inst.OR   =>   ExecuteOr(),
             Inst.XOR  =>  ExecuteXor(),
             Inst.NOR  =>  ExecuteNor(),
-            Inst.XNOR =>  ExecuteXor(),
+            Inst.XNOR => ExecuteXnor(),
             Inst.NAND => ExecuteNand(),
             Inst.SHL  =>  ExecuteShl(),
             Inst.SHR  =>  ExecuteShr(),
@@ -98,12 +98,22 @@ internal class Executer
         };
     }
 
+    private void SetSignFlag() 
+    {
+        if (Memory[Param1] < 0)
+            Flags["sf"] = 1;
+        else
+            Flags["sf"] = 0;
+    }
+
     private object ExecuteAdd()
     {
         if (IsMemory(Param2))
             Memory[Param1] += Memory[Param2];
         else
-            Memory[Param1] += Convert.ToUInt32(Param2);
+            Memory[Param1] += Convert.ToInt32(Param2);
+
+        SetSignFlag();
 
         return new object();
     }
@@ -113,7 +123,9 @@ internal class Executer
         if (IsMemory(Param2))
             Memory[Param1] -= Memory[Param2];
         else
-            Memory[Param1] -= Convert.ToUInt32(Param2);
+            Memory[Param1] -= Convert.ToInt32(Param2);
+
+        SetSignFlag();
 
         return new object();
     }
@@ -123,7 +135,9 @@ internal class Executer
         if (IsMemory(Param2))
             Memory[Param1] *= Memory[Param2];
         else
-            Memory[Param1] *= Convert.ToUInt32(Param2);
+            Memory[Param1] *= Convert.ToInt32(Param2);
+
+        SetSignFlag();
 
         return new object();
     }
@@ -133,7 +147,9 @@ internal class Executer
         if (IsMemory(Param2))
             Memory[Param1] /= Memory[Param2];
         else
-            Memory[Param1] /= Convert.ToUInt32(Param2);
+            Memory[Param1] /= Convert.ToInt32(Param2);
+
+        SetSignFlag();
 
         return new object();
     }
@@ -141,12 +157,14 @@ internal class Executer
     private object ExecuteInc()
     {
         Memory[Param1]++;
+        SetSignFlag();
         return new object();
     }
 
     private object ExecuteDec()
     {
         Memory[Param1]--;
+        SetSignFlag();
         return new object();
     }
 
@@ -155,7 +173,9 @@ internal class Executer
         if (IsMemory(Param2))
             Memory[Param1] &= Memory[Param2];
         else
-            Memory[Param1] &= Convert.ToUInt32(Param2);
+            Memory[Param1] &= Convert.ToInt32(Param2);
+
+        SetSignFlag();
 
         return new object();
     }
@@ -165,7 +185,10 @@ internal class Executer
         if (IsMemory(Param2))
             Memory[Param1] |= Memory[Param2];
         else
-            Memory[Param1] |= Convert.ToUInt32(Param2);
+            Memory[Param1] |= Convert.ToInt32(Param2);
+
+        SetSignFlag();
+
         return new object();
     }
 
@@ -174,13 +197,19 @@ internal class Executer
         if (IsMemory(Param2))
             Memory[Param1] ^= Memory[Param2];
         else
-            Memory[Param1] ^= Convert.ToUInt32(Param2); return new object();
+            Memory[Param1] ^= Convert.ToInt32(Param2);
+
+        SetSignFlag();
+
+        return new object();
     }
 
     private object ExecuteNand()
     {
         if (IsMemory(Param1) && IsMemory(Param2))
             Memory[Param1] = ~(Memory[Param1] & Memory[Param2]);
+
+        SetSignFlag();
 
         return new object();
     }
@@ -190,6 +219,8 @@ internal class Executer
         if (IsMemory(Param1) && IsMemory(Param2))
             Memory[Param1] = ~(Memory[Param1] | Memory[Param2]);
 
+        SetSignFlag();
+
         return new object();
     }
 
@@ -198,9 +229,10 @@ internal class Executer
         if (IsMemory(Param1) && IsMemory(Param2))
             Memory[Param1] = ~(Memory[Param1] ^ Memory[Param2]);
 
+        SetSignFlag();
+
         return new object();
     }
-
 
     private object ExecuteCmp() 
     {
@@ -211,24 +243,32 @@ internal class Executer
     private object ExecuteNot() 
     {
         Memory[Param1] = ~Memory[Param1];
+        SetSignFlag();
+
         return new object();
     }
 
     private object ExecuteNeg()
     {
-        Memory[Param1] = (uint)-Memory[Param1];
+        Memory[Param1] = -Memory[Param1];
+        SetSignFlag();
+
         return new object();
     }
 
     private object ExecuteShl()
     {
         Memory[Param1] = Memory[Param1] << Convert.ToInt32(Param2);
+        SetSignFlag();
+        
         return new object();
     }
 
     private object ExecuteShr()
     {
         Memory[Param1] = Memory[Param1] >> Convert.ToInt32(Param2);
+        SetSignFlag();
+
         return new object();
     }
 
@@ -237,7 +277,7 @@ internal class Executer
         if (IsMemory(Param2))
             Memory[Param1] = Memory[Param2];
         else
-            Memory[Param1] = Convert.ToUInt32(Param2);
+            Memory[Param1] = Convert.ToInt32(Param2);
 
         return new object();
     }
@@ -303,7 +343,7 @@ internal class Executer
 
     private object ExecuteJns()
     {
-        if (Flags["sf"] != -0)
+        if (Flags["sf"] == 0)
             ExecuteJmp();
 
         return new object();
@@ -311,7 +351,7 @@ internal class Executer
 
     private object ExecuteJs()
     {
-        if (Flags["sf"] == -0)
+        if (Flags["sf"] != 0)
             ExecuteJmp();
 
         return new object();

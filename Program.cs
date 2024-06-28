@@ -6,7 +6,7 @@ internal class Program
 {
     static void Main()
     {
-        var file = "fib";
+        var file = "code";
         var code = File.ReadAllLines($"C:\\Users\\adunderdale\\source\\repos\\assembly\\src\\examples\\{file}.txt");
 
         Lexer lexer = new(code);
