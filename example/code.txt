@@ -1,0 +1,9 @@
+﻿main:
+  print "Hello World!"
+
+  add eax 10
+  move eax ebx
+
+test:
+  print "Finished!"
+  goto main
