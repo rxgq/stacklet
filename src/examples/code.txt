@@ -1,5 +1,0 @@
-﻿mov eax, 10
-mov ebx, -30
-
-add eax, ebx
-prt eax
