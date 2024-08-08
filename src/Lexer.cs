@@ -1,10 +1,12 @@
 internal class Lexer {
-
     private string[] Source { get; set; }
-
     private List<Token> Tokens { get; set; } = new();
-
     private int Current { get; set; } = 0;
+
+    private string This { 
+        get => Source[Current]; 
+        set { Source[Current] = value; } 
+    } 
 
     public Lexer(string[] source) {
         Source = source;
@@ -19,21 +21,30 @@ internal class Lexer {
     }
 
     private Token NextToken() {
-        var command = Source[Current].Split(' ')[0].ToLower();
+        This = This.TrimStart();
+        string command = This.Split(' ')[0].ToLower();
 
         return command switch {
             "push" => new(command, TokenType.PUSH, Args()),
-            "pop"  => new(command, TokenType.POP, Args()),
-            "out"  => new(command, TokenType.OUT, Args()),
+            "drop" => new(command, TokenType.DROP),
+            "dupe" => new(command, TokenType.DUPE),
+            "swap" => new(command, TokenType.SWAP),
+            "free" => new(command, TokenType.FREE),
+            "rev" => new(command, TokenType.REV),
 
             "add"  => new(command, TokenType.ADD),
             "sub"  => new(command, TokenType.SUB),
             "mul"  => new(command, TokenType.MUL),
             "div"  => new(command, TokenType.DIV),
             "mod"  => new(command, TokenType.MOD),
+            "neg"  => new(command, TokenType.NEG),
+            "abs"  => new(command, TokenType.ABS),
 
             "def"  => new(command, TokenType.DEF, Args()),
-            "jump"  => new(command, TokenType.JUMP, Args()),
+            "goto" => new(command, TokenType.GOTO, Args()),
+            "out"  => new(command, TokenType.OUT),
+            "nop"  => new(command, TokenType.NOP),
+            "read"  => new(command, TokenType.READ),
 
             ""     => new("", TokenType.SPACE),
             _      => new("", TokenType.BAD),

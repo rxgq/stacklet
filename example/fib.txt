@@ -1,0 +1,10 @@
+push 0
+push 1
+
+def fib
+    out
+    dupe
+    rev
+    add
+
+goto fib

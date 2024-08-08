@@ -21,17 +21,25 @@ internal class Token {
 
 public enum TokenType {
     PUSH,
-    POP,
+    DROP,
+    DUPE,
+    SWAP,
+    FREE,
+    REV,
 
     ADD,
     SUB,
     MUL,
     DIV,
     MOD,
+    NEG,
+    ABS,
 
     OUT,
     DEF,
-    JUMP,
+    GOTO,
+    NOP,
+    READ,
 
     EOF,
     BAD,

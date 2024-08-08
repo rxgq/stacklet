@@ -1,15 +1,12 @@
 internal class Interpreter {
     private List<Token> Tokens { get; set; }
-
     private int Current { get; set; }
-
     private Stack<int> Program { get; set; } = new();
-
     private Dictionary<string, int> Defs { get; set; } = new();
 
     public Interpreter(List<Token> tokens) {
         Tokens = tokens;
-        BuildDefs();
+        MapDefs();
     }
 
     public void Interpret() {
@@ -20,30 +17,79 @@ internal class Interpreter {
 
     private void Execute() {
         switch (Tokens[Current].Type) {
-            case TokenType.PUSH: onPush(); break;
-            case TokenType.POP: onPop(); break;
-            case TokenType.OUT: onOut(); break;
+            case TokenType.PUSH: OnPush(); break;
+            case TokenType.DROP: OnDrop(); break;
+            case TokenType.DUPE: OnDupe(); break;
+            case TokenType.SWAP: OnSwap(); break;
+            case TokenType.FREE: OnFree(); break;
+            case TokenType.REV: OnRev(); break;
+
             case TokenType.ADD: OnOp(); break;
             case TokenType.SUB: OnOp(); break;
             case TokenType.MUL: OnOp(); break;
             case TokenType.DIV: OnOp(); break;
             case TokenType.MOD: OnOp(); break;
-            case TokenType.JUMP: OnJump(); break;
+            case TokenType.ABS: OnAbs(); break;
+            case TokenType.NEG: OnNeg(); break;
+
+            case TokenType.OUT: OnOut(); break;
+            case TokenType.READ: OnRead(); break;
+            case TokenType.GOTO: OnGoto(); break;
         }
     }
 
-    private void onPush() {
+    private void OnPush() {
         Program.Push(int.Parse(Tokens[Current].Args[0]));
     }
 
-    private void onPop() {
+    private void OnDrop() {
         if (Program.Count < 1) return;
         Program.Pop();
     }
 
-    private void onOut() {
+    private void OnDupe() {
         if (Program.Count < 1) return;
+
+        var a = Program.Peek();
+        Program.Push(a);
+    }
+
+    private void OnSwap() {
+        if (Program.Count < 2) return;
+
+        var a = Program.Pop();
+        var b = Program.Pop();
+
+        Program.Push(a);
+        Program.Push(b);
+    }
+
+    private void OnFree() {
+        Program.Clear();
+    }
+
+    private void OnRev() {
+        var rev = new Stack<int>();
+
+       while (Program.Count != 0)
+            rev.Push(Program.Pop());
+
+        Program = rev;
+    }
+
+    private void OnOut() {
+        if (Program.Count < 1) return;
+
+        Thread.Sleep(400);
         Console.Write(Program.Peek() + "\n");
+    }
+
+    private void OnRead() {
+        var a = Console.ReadLine();
+        if (string.IsNullOrWhiteSpace(a)) 
+            return;
+
+        Program.Push(int.Parse(a));
     }
 
     private void OnOp() {
@@ -61,18 +107,30 @@ internal class Interpreter {
         }
     }
 
-    private void OnJump() {
-        Thread.Sleep(500);
+    private void OnAbs() {
+        if (Program.Count < 1) return;
+
+        var a = Program.Pop();
+        Program.Push(Math.Abs(a));
+    }
+
+    private void OnNeg() {
+        if (Program.Count < 1) return;
+
+        var a = Program.Pop();
+        Program.Push(-a);
+    }
+
+    private void OnGoto() {
         var def = Defs.TryGetValue(Tokens[Current].Args[0], out int idx) ? idx : -1;
         if (def != -1) Current = idx;
     }
 
-    private void BuildDefs() {
+    private void MapDefs() {
         for (int i = 0; i < Tokens.Count; i++) {
             if (Tokens[i].Type == TokenType.DEF)
                 Defs[Tokens[i].Args[0]] = i;
         }
-
     }
 
     public void Print() {

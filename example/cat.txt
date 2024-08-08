@@ -1,0 +1,5 @@
+def cat
+  read
+  out
+
+goto cat
