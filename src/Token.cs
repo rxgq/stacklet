@@ -27,6 +27,9 @@ public enum TokenType {
     SUB,
     MUL,
     DIV,
+    MOD,
+
+    OUT,
 
     EOF,
     BAD,

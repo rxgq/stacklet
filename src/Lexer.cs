@@ -11,13 +11,10 @@ internal class Lexer {
     }
 
     public List<Token> Tokenize() {
-        while (Current < Source.Length) {
+        for (; Current < Source.Length; Current++)
             Tokens.Add(NextToken());
-            Current++;
-        }
 
         Tokens.Add(new Token("", TokenType.EOF));
-        
         return Tokens;
     }
 
@@ -26,15 +23,17 @@ internal class Lexer {
 
         return command switch {
             "push" => new(command, TokenType.PUSH, Args()),
-            "pop"  => new(command,  TokenType.POP, Args()),
+            "pop"  => new(command, TokenType.POP, Args()),
+            "out"  => new(command, TokenType.OUT, Args()),
 
-            "add"  => new(command,  TokenType.ADD),
-            "sub"  => new(command,  TokenType.SUB),
-            "mul"  => new(command,  TokenType.MUL),
-            "div"  => new(command,  TokenType.DIV),
+            "add"  => new(command, TokenType.ADD),
+            "sub"  => new(command, TokenType.SUB),
+            "mul"  => new(command, TokenType.MUL),
+            "div"  => new(command, TokenType.DIV),
+            "mod"  => new(command, TokenType.MOD),
 
-            ""     => new("",     TokenType.SPACE),
-            _      => new("",       TokenType.BAD),
+            ""     => new("", TokenType.SPACE),
+            _      => new("", TokenType.BAD),
         };
     }
 
@@ -52,5 +51,7 @@ internal class Lexer {
         foreach (var token in Tokens) {
             Console.Write(token.ToString());
         }
+
+        Console.Write($"Token Count: {Tokens.Count}\n\n");
     }
 }
