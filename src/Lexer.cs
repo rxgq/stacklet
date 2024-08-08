@@ -30,7 +30,8 @@ internal class Lexer {
             "dupe" => new(command, TokenType.DUPE),
             "swap" => new(command, TokenType.SWAP),
             "free" => new(command, TokenType.FREE),
-            "rev" => new(command, TokenType.REV),
+            "rotate" => new(command, TokenType.ROTATE),
+            "size" => new(command, TokenType.SIZE),
 
             "add"  => new(command, TokenType.ADD),
             "sub"  => new(command, TokenType.SUB),
@@ -45,6 +46,7 @@ internal class Lexer {
             "out"  => new(command, TokenType.OUT),
             "nop"  => new(command, TokenType.NOP),
             "read"  => new(command, TokenType.READ),
+            "halt"  => new(command, TokenType.HALT),
 
             ""     => new("", TokenType.SPACE),
             _      => new("", TokenType.BAD),

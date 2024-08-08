@@ -1,9 +1,9 @@
-﻿push 1
-push 0
+﻿push 0
+push 1
 
 def counter
   add
   out
-  push 1
+  push 1 
 
 goto counter

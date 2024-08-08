@@ -22,7 +22,8 @@ internal class Interpreter {
             case TokenType.DUPE: OnDupe(); break;
             case TokenType.SWAP: OnSwap(); break;
             case TokenType.FREE: OnFree(); break;
-            case TokenType.REV: OnRev(); break;
+            case TokenType.ROTATE: OnRotate(); break;
+            case TokenType.SIZE: OnSize(); break;
 
             case TokenType.ADD: OnOp(); break;
             case TokenType.SUB: OnOp(); break;
@@ -35,6 +36,7 @@ internal class Interpreter {
             case TokenType.OUT: OnOut(); break;
             case TokenType.READ: OnRead(); break;
             case TokenType.GOTO: OnGoto(); break;
+            case TokenType.HALT: OnHalt(); break;
         }
     }
 
@@ -68,13 +70,17 @@ internal class Interpreter {
         Program.Clear();
     }
 
-    private void OnRev() {
+    private void OnRotate() {
         var rev = new Stack<int>();
 
        while (Program.Count != 0)
             rev.Push(Program.Pop());
 
         Program = rev;
+    }
+
+    private void OnSize() {
+        Program.Push(Program.Count); 
     }
 
     private void OnOut() {
@@ -124,6 +130,10 @@ internal class Interpreter {
     private void OnGoto() {
         var def = Defs.TryGetValue(Tokens[Current].Args[0], out int idx) ? idx : -1;
         if (def != -1) Current = idx;
+    }
+
+    private void OnHalt() {
+        Environment.Exit(0);
     }
 
     private void MapDefs() {

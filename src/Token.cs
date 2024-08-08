@@ -25,7 +25,8 @@ public enum TokenType {
     DUPE,
     SWAP,
     FREE,
-    REV,
+    ROTATE,
+    SIZE,
 
     ADD,
     SUB,
@@ -40,8 +41,13 @@ public enum TokenType {
     GOTO,
     NOP,
     READ,
+    HALT,
 
     EOF,
     BAD,
     SPACE,
 }
+
+
+// IDEAS
+// MIN, MAX, 
