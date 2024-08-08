@@ -1,33 +1,34 @@
-﻿namespace assembly;
+internal class Token {
 
-public enum TokenType
-{
-    ADD,
-    SUB,
-    DIV,
-    MUL,
-    
-    MOVE,
-    
-    PRINT,
-    
-    PROC,
-    GOTO,
-    
-    BAD
-}
+    public string Value { get; set; }
 
-public class Token
-{
-    private TokenType Type { get; set; }
-    private List<string> Parameters { get; set; }
+    public TokenType Type { get; set; }
 
-    public Token(TokenType type, List<string> parameters)
-    {
+    public List<string> Args { get; set; }
+
+    public Token(string value, TokenType type, List<string>? args = null) {
+        Value = value;
         Type = type;
-        Parameters = parameters;
+        Args = args ?? new List<string>();
     }
 
     public override string ToString()
-        => $"Type: {Type.ToString(), -8} || {string.Join(" | ", Parameters)}";
+    {
+        string argsFormatted = Args.Count > 0 ? $"[{string.Join(", ", Args)}]" : string.Empty;
+        return $"Token: {Type} {Value} {argsFormatted}\n";
+    }
+}
+
+public enum TokenType {
+    PUSH,
+    POP,
+
+    ADD,
+    SUB,
+    MUL,
+    DIV,
+
+    EOF,
+    BAD,
+    SPACE,
 }

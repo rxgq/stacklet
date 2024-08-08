@@ -1,9 +1,5 @@
-﻿main:
-  print "Hello World!"
+﻿push
+pop
 
-  add eax 10
-  move eax ebx
-
-test:
-  print "Finished!"
-  goto main
+pop
+add

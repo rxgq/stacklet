@@ -1,103 +1,56 @@
-﻿namespace assembly;
+internal class Lexer {
 
-public class Lexer
-{
-    private List<Token> Tokens { get; set; } = new();
     private string[] Source { get; set; }
-    private int Position { get; set; }
-    private string Current => Source[Position];
 
-    public Lexer(string[] source)
-    {
+    private List<Token> Tokens { get; set; } = new();
+
+    private int Current { get; set; } = 0;
+
+    public Lexer(string[] source) {
         Source = source;
     }
 
-    public List<Token> Tokenize()
-    {
-        while (!IsEof())
-        {
-            var line = RemoveComments(Current.Trim());
-
-            if (!string.IsNullOrEmpty(line))
-                Tokens.Add(NextToken(line));
-
-            Position++;
+    public List<Token> Tokenize() {
+        while (Current < Source.Length) {
+            Tokens.Add(NextToken());
+            Current++;
         }
 
+        Tokens.Add(new Token("", TokenType.EOF));
+        
         return Tokens;
     }
 
-    private static Token NextToken(string line)
-    {
-        if (line.EndsWith(":"))
-        {
-            var labelName = line[..^1].Trim();
-            return new Token(TokenType.PROC, new List<string> { labelName });
-        }
-        
-        var command = line.Split(" ")[0].ToLower();
+    private Token NextToken() {
+        var command = Source[Current].Split(' ')[0].ToLower();
 
-        return command switch
-        {
-            "add"   => new Token(TokenType.ADD,   Parameters(line)),
-            "sub"   => new Token(TokenType.SUB,   Parameters(line)),
-            "mul"   => new Token(TokenType.MUL,   Parameters(line)),
-            "div"   => new Token(TokenType.DIV,   Parameters(line)),
-            "move"  => new Token(TokenType.MOVE,  Parameters(line)),
-            "print" => new Token(TokenType.PRINT, Parameters(line)),
-            "goto"  => new Token(TokenType.GOTO,  Parameters(line)),
-            _       => new Token(TokenType.BAD,   Parameters(line))
+        return command switch {
+            "push" => new(command, TokenType.PUSH, Args()),
+            "pop"  => new(command,  TokenType.POP, Args()),
+
+            "add"  => new(command,  TokenType.ADD),
+            "sub"  => new(command,  TokenType.SUB),
+            "mul"  => new(command,  TokenType.MUL),
+            "div"  => new(command,  TokenType.DIV),
+
+            ""     => new("",     TokenType.SPACE),
+            _      => new("",       TokenType.BAD),
         };
     }
 
-    private static string RemoveComments(string line)
-    {
-        var commentIndex = line.IndexOf("//", StringComparison.Ordinal);
-        if (commentIndex != -1)
-            line = line[..commentIndex].Trim();
-        
-        return line;
+    private List<string> Args() {
+        var tokens = Source[Current].Split(' ');
+
+        var args = new List<string>();
+        if (tokens.Length > 1) args.Add(tokens[1]);
+        if (tokens.Length > 2) args.Add(tokens[2]);
+
+        return args;
     }
-    
-    private static List<string> Parameters(string line)
-    {
-        var spaceIndex = line.IndexOf(' ');
 
-        if (spaceIndex == -1)
-            return new List<string>();
-
-        var paramString = line[(spaceIndex + 1)..].Trim();
-        var parameters = new List<string>();
-
-        while (!string.IsNullOrWhiteSpace(paramString))
-        {
-            if (paramString[0] == '\"')
-            {
-                var endIndex = paramString.IndexOf('\"', 1);
-                if (endIndex == -1)
-                {
-                    parameters.Add(paramString[1..]);
-                    break;
-                }
-                parameters.Add(paramString.Substring(1, endIndex - 1));
-                paramString = endIndex + 1 < paramString.Length ? paramString[(endIndex + 1)..].Trim() : string.Empty;
-            }
-            else
-            {
-                var endIndex = paramString.IndexOf(' ');
-                if (endIndex == -1)
-                {
-                    parameters.Add(paramString);
-                    break;
-                }
-                parameters.Add(paramString[..endIndex]);
-                paramString = endIndex + 1 < paramString.Length ? paramString[(endIndex + 1)..].Trim() : string.Empty;
-            }
+    public void Print() {
+        foreach (var token in Tokens) {
+            Console.Write(token.ToString());
         }
-
-        return parameters;
     }
-
-    private bool IsEof()
-        => Position >= Source.Length;
 }
