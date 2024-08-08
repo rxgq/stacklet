@@ -32,6 +32,9 @@ internal class Lexer {
             "div"  => new(command, TokenType.DIV),
             "mod"  => new(command, TokenType.MOD),
 
+            "def"  => new(command, TokenType.DEF, Args()),
+            "jump"  => new(command, TokenType.JUMP, Args()),
+
             ""     => new("", TokenType.SPACE),
             _      => new("", TokenType.BAD),
         };
@@ -48,10 +51,11 @@ internal class Lexer {
     }
 
     public void Print() {
+        Console.WriteLine("\n======= TOKENS =======");
         foreach (var token in Tokens) {
             Console.Write(token.ToString());
         }
 
-        Console.Write($"Token Count: {Tokens.Count}\n\n");
+        Console.Write($"\nTOKEN COUNT: {Tokens.Count}\n\n");
     }
 }

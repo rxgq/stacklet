@@ -11,5 +11,7 @@ internal abstract class Program {
 
         var program = new Interpreter(tokens);
         program.Interpret();
+
+        program.Print();
     }
 }

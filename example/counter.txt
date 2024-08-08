@@ -1,0 +1,9 @@
+﻿push 1 
+push 0
+
+def fib
+add
+out
+push 1
+
+jump fib

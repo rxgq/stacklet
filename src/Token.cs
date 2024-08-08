@@ -15,7 +15,7 @@ internal class Token {
     public override string ToString()
     {
         string argsFormatted = Args.Count > 0 ? $"[{string.Join(", ", Args)}]" : string.Empty;
-        return $"Token: {Type} {Value} {argsFormatted}\n";
+        return $"{Type} {Value} {argsFormatted}\n";
     }
 }
 
@@ -30,6 +30,8 @@ public enum TokenType {
     MOD,
 
     OUT,
+    DEF,
+    JUMP,
 
     EOF,
     BAD,
