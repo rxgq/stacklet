@@ -4,6 +4,7 @@ push 1
 def fib
   wait 1
   out
+  
   dupe
   spin
   add

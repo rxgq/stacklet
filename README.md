@@ -1,9 +1,58 @@
 ## Installation
-Clone latest version of Stacklet from the repository and run it in your terminal.
+Clone latest version of Stacklet from the repository.
+```bash
+git clone https://github.com/rxgq/stacklet.git
+cd stacklet
+```
 
-## Syntax
-Stacklet commands are typically written as `command arg1`, with each command operating on a stack. Commands and arguments are separated by spaces.
+<br>
 
+Build the project using .NET
+```bash
+dotnet build
+```
+
+## Usage
+
+To run a Stacklet program, use the following:
+
+```bash
+dotnet run -- <path_to_code>
+```
+
+For example:
+
+```bash
+dotnet run -- example/fib.txt
+```
+
+
+
+
+## Features
+
+- Basic Stack Manipulation (push, drop, dupe, swap, etc)
+- Arithmetic Operations(add, sub, mul, div, etc)
+- Control Flow (goto, labels)
+- I/O Operations (out, read)
+- Conditional Statement Execution
+
+## Example Program
+
+Program that infinitely outputs the fibonacci sequence
+```
+  push 0
+  push 1
+
+  def fib
+    wait 1
+    out
+    dupe
+    spin
+    add
+
+  goto fib
+```
 
 <br>
 <br>
@@ -210,7 +259,7 @@ Stacklet commands are typically written as `command arg1`, with each command ope
 <br>
 <br>
 
-### Stack Operations
+### Misc
 <hr>
 
 **DUMP**
@@ -273,7 +322,7 @@ Stacklet commands are typically written as `command arg1`, with each command ope
 <br>
 
 **OUT**
-- **Description**: prints the value at the top of the stack to the output or a string
+- **Description**: Prints the value at the top of the stack to the output or a string
 - **Syntax**: `out`
   
   ```
@@ -292,6 +341,20 @@ Stacklet commands are typically written as `command arg1`, with each command ope
   ```
   read     // input: 1
   out      // 1
+  ```
+
+<br>
+
+
+**WAIT**
+- **Description**: Reads in an integer and 'sleeps' the program for that time
+- **Syntax**: `wait`
+  
+  ```
+  dpush 10
+  wait 1      // waits for 1 second
+
+  out
   ```
 
 <br>
