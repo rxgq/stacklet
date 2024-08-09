@@ -123,9 +123,9 @@ internal class Interpreter {
         if (IsCondition()) return;
 
         Console.Write("STACK: ");
-        foreach (int num in Program) {
-            Console.Write($"{num} ");
-        }
+        var stackArray = Program.ToArray();
+        for (int i = stackArray.Length - 1; i >= 0; i--)
+            Console.Write($"{stackArray[i]} ");
 
         Console.WriteLine();
     }
