@@ -1,4 +1,4 @@
-internal abstract class Stacklet
+internal abstract class Program
 {
     public static void Main(string[] args) {
         if (args.Length == 0) {
@@ -36,7 +36,9 @@ internal abstract class Stacklet
             };
 
             foreach (var test in tests) {
-                var source = File.ReadAllLines($"tests/{test.Value}/{test.Key}_test.txt");
+                var path = $"tests/{test.Value}/{test.Key}_test.txt";
+
+                var source = File.ReadAllLines(path);
                 Execute(source);
             }
         }
