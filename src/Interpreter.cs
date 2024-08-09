@@ -45,19 +45,19 @@ internal class Interpreter {
     }
 
     private void OnDrop() {
-        if (Program.Count < 1) return;
+        if (Program.Count < 1) throw new StackUnderflow("Cannot drop from an empty stack");
         Program.Pop();
     }
 
     private void OnDupe() {
-        if (Program.Count < 1) return;
+        if (Program.Count < 1) throw new InvalidStackOperation("Cannot dupe a value from an empty stack");
 
         var a = Program.Peek();
         Program.Push(a);
     }
 
     private void OnSwap() {
-        if (Program.Count < 2) return;
+        if (Program.Count < 2) throw new InvalidStackOperation($"Cannot swap on a stack with less than 2 values");
 
         var a = Program.Pop();
         var b = Program.Pop();
@@ -73,7 +73,7 @@ internal class Interpreter {
     private void OnRotate() {
         var rev = new Stack<int>();
 
-       while (Program.Count != 0)
+        while (Program.Count != 0)
             rev.Push(Program.Pop());
 
         Program = rev;
@@ -84,10 +84,15 @@ internal class Interpreter {
     }
 
     private void OnOut() {
-        if (Program.Count < 1) return;
+        if (Program.Count < 1 && Tokens[Current].Args.Count == 0) throw new InvalidStackOperation("Cannot perform out on an empty stack");
 
-        Thread.Sleep(400);
+        if (Tokens[Current].Args.Count == 1) {
+            Console.WriteLine(Tokens[Current].Args[0]);
+            return;
+        }
+
         Console.Write(Program.Peek() + "\n");
+        Thread.Sleep(400);
     }
 
     private void OnRead() {
@@ -99,7 +104,7 @@ internal class Interpreter {
     }
 
     private void OnOp() {
-        if (Program.Count < 2) return;
+        if (Program.Count < 2) throw new InvalidStackOperation("Cannot perform operation on a stack with less than 2 values");
 
         var b = Program.Pop();
         var a = Program.Pop();
@@ -114,14 +119,14 @@ internal class Interpreter {
     }
 
     private void OnAbs() {
-        if (Program.Count < 1) return;
+        if (Program.Count < 1) throw new InvalidStackOperation("Cannot perform operation on a stack with less than 1 value");
 
         var a = Program.Pop();
         Program.Push(Math.Abs(a));
     }
 
     private void OnNeg() {
-        if (Program.Count < 1) return;
+        if (Program.Count < 1) throw new InvalidStackOperation("Cannot perform operation on a stack with less than 1 value");
 
         var a = Program.Pop();
         Program.Push(-a);

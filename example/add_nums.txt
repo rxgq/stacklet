@@ -1,9 +1,0 @@
-def add
-  read
-  read
-  add
-  out
-
-  halt
-
-goto add

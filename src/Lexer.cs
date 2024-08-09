@@ -25,42 +25,55 @@ internal class Lexer {
         string command = This.Split(' ')[0].ToLower();
 
         return command switch {
-            "push" => new(command, TokenType.PUSH, Args()),
-            "drop" => new(command, TokenType.DROP),
-            "dupe" => new(command, TokenType.DUPE),
-            "swap" => new(command, TokenType.SWAP),
-            "free" => new(command, TokenType.FREE),
+            "push"   => new(command, TokenType.PUSH, Args()),
+            "drop"   => new(command, TokenType.DROP),
+            "dupe"   => new(command, TokenType.DUPE),
+            "swap"   => new(command, TokenType.SWAP),
+            "free"   => new(command, TokenType.FREE),
             "rotate" => new(command, TokenType.ROTATE),
-            "size" => new(command, TokenType.SIZE),
+            "size"   => new(command, TokenType.SIZE),
 
-            "add"  => new(command, TokenType.ADD),
-            "sub"  => new(command, TokenType.SUB),
-            "mul"  => new(command, TokenType.MUL),
-            "div"  => new(command, TokenType.DIV),
-            "mod"  => new(command, TokenType.MOD),
-            "neg"  => new(command, TokenType.NEG),
-            "abs"  => new(command, TokenType.ABS),
+            "add"    => new(command, TokenType.ADD),
+            "sub"    => new(command, TokenType.SUB),
+            "mul"    => new(command, TokenType.MUL),
+            "div"    => new(command, TokenType.DIV),
+            "mod"    => new(command, TokenType.MOD),
+            "neg"    => new(command, TokenType.NEG),
+            "abs"    => new(command, TokenType.ABS),
 
-            "def"  => new(command, TokenType.DEF, Args()),
-            "goto" => new(command, TokenType.GOTO, Args()),
-            "out"  => new(command, TokenType.OUT),
-            "nop"  => new(command, TokenType.NOP),
-            "read"  => new(command, TokenType.READ),
-            "halt"  => new(command, TokenType.HALT),
+            "def"    => new(command, TokenType.DEF, Args()),
+            "goto"   => new(command, TokenType.GOTO, Args()),
+            "out"    => new(command, TokenType.OUT, Args()),
+            "nop"    => new(command, TokenType.NOP),
+            "read"   => new(command, TokenType.READ),
+            "halt"   => new(command, TokenType.HALT),
 
-            ""     => new("", TokenType.SPACE),
-            _      => new("", TokenType.BAD),
+            ""       => new("", TokenType.SPACE),
+            _        => new("", TokenType.BAD),
         };
     }
 
     private List<string> Args() {
         var tokens = Source[Current].Split(' ');
-
         var args = new List<string>();
+
+        if (tokens.Length > 1 && tokens[1][0] == '\"') {
+            args.Add(ParseString());
+            return args;
+        }
+
         if (tokens.Length > 1) args.Add(tokens[1]);
         if (tokens.Length > 2) args.Add(tokens[2]);
 
         return args;
+    }
+
+    private string ParseString() {
+        int curr = 5;
+        while (This[curr] != '\"')
+            curr++;
+
+        return This[5..curr];
     }
 
     public void Print() {

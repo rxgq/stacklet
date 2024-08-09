@@ -1,0 +1,14 @@
+def calc
+  out "Enter a number"
+  read
+  out "Enter another number"
+  read
+
+  add
+  
+  out "Result: "
+  out
+
+  halt
+
+goto calc
