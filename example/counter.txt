@@ -1,9 +1,5 @@
-﻿push 0
-push 1
-
-def counter
-  add
+﻿def main
+  size
   out
-  push 1 
 
-goto counter
+goto main

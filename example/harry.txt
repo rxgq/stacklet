@@ -1,6 +1,0 @@
-out "what is it insane in again? (1: the nuts, else other )"
-read
-
-HALT ifnt 1
-
-out "YEAAAHHHH"
