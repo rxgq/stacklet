@@ -1,0 +1,5 @@
+push 24
+push 6
+div
+
+out

@@ -4,7 +4,7 @@ push 1
 def fib
   out
   dupe
-  rotate
+  spin
   add
 
 goto fib
