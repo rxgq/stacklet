@@ -49,8 +49,6 @@ internal class Lexer {
             "read"   => new(command, TokenType.READ, Args()),
             "halt"   => new(command, TokenType.HALT, Args()),
 
-            "if"   => new(command, TokenType.IF, Args()),
-
             ""       => new("", TokenType.SPACE),
             _        => new("", TokenType.BAD),
         };

@@ -1,5 +1,17 @@
-push 1
-push 2
+def main
+  out "enter num"
+  read
 
-add if 1
-out
+  out "enter num 2"
+  read
+
+  out "enter op: 1 = +, 2 = -, 3 = *, 4 = /"
+  read
+
+  add if 1
+
+
+  out
+  halt
+
+goto main
