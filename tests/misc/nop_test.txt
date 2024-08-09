@@ -1,0 +1,7 @@
+push 10
+nop
+
+drop
+
+push 5
+out

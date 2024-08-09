@@ -1,0 +1,4 @@
+out "Hello World!"
+
+push 10
+out

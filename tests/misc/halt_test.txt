@@ -1,0 +1,6 @@
+push 10
+out
+
+halt
+
+out

@@ -1,5 +1,10 @@
 ﻿def main
   size
   out
+  goto test if 10
 
 goto main
+
+def test
+  dump
+  halt

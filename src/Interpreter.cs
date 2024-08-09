@@ -3,6 +3,7 @@ internal class Interpreter {
     private int Current { get; set; }
     private Stack<int> Program { get; set; } = new();
     private Dictionary<string, int> Defs { get; set; } = new();
+    private bool IsHalted { get; set; } = false;
 
     public Interpreter(List<Token> tokens) {
         Tokens = tokens;
@@ -10,7 +11,7 @@ internal class Interpreter {
     }
 
     public void Interpret() {
-        for (; Tokens[Current].Type != TokenType.EOF; Current++) {
+        for (; Tokens[Current].Type != TokenType.EOF && !IsHalted; Current++) {
             Execute();
         }
     }
@@ -171,7 +172,7 @@ internal class Interpreter {
     private void OnHalt() {
         if (IsCondition()) return;
 
-        Environment.Exit(0);
+        IsHalted = true;
     }
 
     private void MapDefs() {

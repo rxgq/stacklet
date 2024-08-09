@@ -95,6 +95,10 @@ Stacklet commands are typically written as `command arg1`, with each command ope
   ```
 
 
+<br>
+<br>
+<br>
+
 ### Stack Operations
 <hr>
 
@@ -185,7 +189,6 @@ Stacklet commands are typically written as `command arg1`, with each command ope
 
 <br>
 
-
 **FREE**
 - **Description**: Clears the stack contents
 - **Syntax**: `free`
@@ -199,6 +202,96 @@ Stacklet commands are typically written as `command arg1`, with each command ope
 
   push 1
   out      // Stack now contains 1
+  ```
+
+<br>
+
+<br>
+<br>
+<br>
+
+### Stack Operations
+<hr>
+
+**DUMP**
+- **Description**: Dumps the contents of the stack into the output
+- **Syntax**: `dump`
+  
+  ```
+  push 1
+  push 4
+  push 2
+  push 8
+
+  dump          // STACK: 1, 4, 2, 8
+  ```
+
+<br>
+
+**GOTO**
+- **Description**: Attempts to update the instruction pointer to the location of the 
+- **Syntax**: `goto arg1`
+  
+  ```
+  def main
+    out "Running main"
+  
+    goto main      // infinitely calls 'main'
+  ```
+
+<br>
+
+**HALT**
+- **Description**: Exits the program immediately 
+- **Syntax**: `halt`
+  
+  ```
+  push 10
+  out 
+
+  halt
+
+  out      // will not get executed
+  ```
+
+<br>
+
+**NOP**
+- **Description**: No operation, does nothing
+- **Syntax**: `nop`
+  
+  ```
+  push 10
+  nop      // does nothing
+
+  drop
+
+  push 5
+  out
+  ```
+
+<br>
+
+**OUT**
+- **Description**: prints the value at the top of the stack to the output or a string
+- **Syntax**: `out`
+  
+  ```
+  out "Hello World!"    // Hello World!
+
+  push 10
+  out      // 10
+  ```
+
+<br>
+
+**READ**
+- **Description**: reads an integer input from the user
+- **Syntax**: `read`
+  
+  ```
+  read     // input: 1
+  out      // 1
   ```
 
 <br>

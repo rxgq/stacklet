@@ -20,6 +20,21 @@ internal class Token {
 }
 
 public enum TokenType {
+    // arithmetic
+    ADD,
+    SUB,
+    MUL,
+    DIV,
+    MOD,
+    NEG,
+    ABS,
+    
+    // MAX
+
+    // MIN
+
+
+    // stack
     PUSH,
     DROP,
     DUPE,
@@ -28,29 +43,23 @@ public enum TokenType {
     SPIN,
     SIZE,
 
-    ADD,
-    SUB,
-    MUL,
-    DIV,
-    MOD,
-    NEG,
-    ABS,
 
+    // misc
     OUT,
-    DEF,
     GOTO,
     NOP,
     READ,
     HALT,
     DUMP,
 
-    IF,
 
+    // control flow
+    IF,
+    DEF,
+
+
+    // etc
     EOF,
     BAD,
     SPACE,
 }
-
-
-// IDEAS
-// MIN, MAX, 
