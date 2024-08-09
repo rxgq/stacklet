@@ -22,7 +22,7 @@ internal class Interpreter {
             case TokenType.DUPE: OnDupe(); break;
             case TokenType.SWAP: OnSwap(); break;
             case TokenType.FREE: OnFree(); break;
-            case TokenType.ROTATE: OnRotate(); break;
+            case TokenType.SPIN: OnSpin(); break;
             case TokenType.SIZE: OnSize(); break;
             case TokenType.DUMP: OnDump(); break;
 
@@ -38,10 +38,14 @@ internal class Interpreter {
             case TokenType.READ: OnRead(); break;
             case TokenType.GOTO: OnGoto(); break;
             case TokenType.HALT: OnHalt(); break;
+
+            case TokenType.BAD: throw new InvalidStackOperation($"Invalid command '{Tokens[Current].Value}'");
         }
     }
 
     private void OnPush() {
+        if (IsCondition()) return;
+
         Program.Push(int.Parse(Tokens[Current].Args[0]));
     }
 
@@ -76,7 +80,7 @@ internal class Interpreter {
         Program.Clear();
     }
 
-    private void OnRotate() {
+    private void OnSpin() {
         if (IsCondition()) return;
 
         var rev = new Stack<int>();
@@ -180,17 +184,28 @@ internal class Interpreter {
     }
 
     private bool IsCondition() {
+
+        // the program will always try to evaluate an if statement regardless of whether it finds a conditional keyword
+        // this line prevents it from actually executing the code
+        // it returns false to signify a pseudo-result: "false" evaluating the conditional to true, therefore executing the statement
         if (Tokens[Current].Args.Count < 2) return false;
-
-        var ifStmt = Tokens[Current].Args[0].ToLower(); 
-        if (ifStmt != "if" && ifStmt != "ifnt") throw new InvalidStackOperation("Expected 'if' or 'ifnt'");
-
+        
         if (Program.Count == 0) throw new InvalidStackOperation("Cannot evaluate 'if' or 'ifnt' expression on empty stack");
+
+        int ifIndex = Tokens[Current].Args
+            .FindIndex(arg => arg.ToLower() == "if" || arg.ToLower() == "ifnt");
+        if (ifIndex == -1) throw new InvalidStackOperation("Expected 'if' or 'ifnt'");
+
+        if (Tokens[Current].Args.Count != ifIndex + 2) throw new InvalidStackOperation("Expected a condition after 'if' or 'ifnt'");
+
+
+        var ifStmt = Tokens[Current].Args[ifIndex].ToLower();
+        if (ifStmt != "if" && ifStmt != "ifnt") throw new InvalidStackOperation("Expected 'if' or 'ifnt'");
 
         var a = Program.Peek();
 
-        if (ifStmt == "if") return a != int.Parse(Tokens[Current].Args[1]);
-        return a == int.Parse(Tokens[Current].Args[1]);
+        if (ifStmt == "if") return a != int.Parse(Tokens[Current].Args[ifIndex + 1]);
+        return a == int.Parse(Tokens[Current].Args[ifIndex + 1]);
     }
 
     public void Print() {

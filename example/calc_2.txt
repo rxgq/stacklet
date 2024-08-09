@@ -1,0 +1,49 @@
+def main
+  out "enter num"
+  read
+
+  out "enter num 2"
+  read
+
+  out "enter operation: 1 = +, 2 = -, 3 = *, 4 = /"
+  read
+
+  out "result:"
+  goto addnum if 1
+  goto subnum if 2
+  goto mulnum if 3
+  goto divnum if 4
+
+  goto badOp
+
+goto main
+
+
+def addnum
+  drop
+  add
+  out
+  halt
+
+def subnum
+  drop
+  sub
+  out
+  halt
+
+def mulnum
+  drop
+  mul
+  out
+  halt
+
+def divnum
+  drop
+  div
+  out
+  halt
+
+
+def badOp
+  out "invalid operation"
+  goto main

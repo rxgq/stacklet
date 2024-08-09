@@ -25,7 +25,7 @@ public enum TokenType {
     DUPE,
     SWAP,
     FREE,
-    ROTATE,
+    SPIN,
     SIZE,
     DUMP,
 
