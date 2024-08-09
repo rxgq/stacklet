@@ -24,6 +24,7 @@ internal class Interpreter {
             case TokenType.FREE: OnFree(); break;
             case TokenType.ROTATE: OnRotate(); break;
             case TokenType.SIZE: OnSize(); break;
+            case TokenType.DUMP: OnDump(); break;
 
             case TokenType.ADD: OnOp(); break;
             case TokenType.SUB: OnOp(); break;
@@ -46,11 +47,14 @@ internal class Interpreter {
 
     private void OnDrop() {
         if (Program.Count < 1) throw new StackUnderflow("Cannot drop from an empty stack");
+        if (IsCondition()) return;
+
         Program.Pop();
     }
 
     private void OnDupe() {
         if (Program.Count < 1) throw new InvalidStackOperation("Cannot dupe a value from an empty stack");
+        if (IsCondition()) return;
 
         var a = Program.Peek();
         Program.Push(a);
@@ -58,6 +62,7 @@ internal class Interpreter {
 
     private void OnSwap() {
         if (Program.Count < 2) throw new InvalidStackOperation($"Cannot swap on a stack with less than 2 values");
+        if (IsCondition()) return;
 
         var a = Program.Pop();
         var b = Program.Pop();
@@ -67,10 +72,13 @@ internal class Interpreter {
     }
 
     private void OnFree() {
+        if (IsCondition()) return;
         Program.Clear();
     }
 
     private void OnRotate() {
+        if (IsCondition()) return;
+
         var rev = new Stack<int>();
 
         while (Program.Count != 0)
@@ -80,11 +88,15 @@ internal class Interpreter {
     }
 
     private void OnSize() {
+        if (IsCondition()) return;
         Program.Push(Program.Count); 
     }
 
     private void OnOut() {
         if (Program.Count < 1 && Tokens[Current].Args.Count == 0) throw new InvalidStackOperation("Cannot perform out on an empty stack");
+        if (IsCondition()) return;
+
+        Thread.Sleep(400);
 
         if (Tokens[Current].Args.Count == 1) {
             Console.WriteLine(Tokens[Current].Args[0]);
@@ -92,10 +104,11 @@ internal class Interpreter {
         }
 
         Console.Write(Program.Peek() + "\n");
-        Thread.Sleep(400);
     }
 
     private void OnRead() {
+        if (IsCondition()) return;
+
         var a = Console.ReadLine();
         if (string.IsNullOrWhiteSpace(a)) 
             return;
@@ -103,8 +116,20 @@ internal class Interpreter {
         Program.Push(int.Parse(a));
     }
 
+    private void OnDump() {
+        if (IsCondition()) return;
+
+        Console.Write("STACK: ");
+        foreach (int num in Program) {
+            Console.Write($"{num} ");
+        }
+
+        Console.WriteLine();
+    }
+
     private void OnOp() {
-        if (Program.Count < 2) throw new InvalidStackOperation("Cannot perform operation on a stack with less than 2 values");
+        if (Program.Count < 2) throw new InvalidStackOperation($"Cannot perform operation on a stack with less than 2 values");
+        if (IsCondition()) return;
 
         var b = Program.Pop();
         var a = Program.Pop();
@@ -120,6 +145,7 @@ internal class Interpreter {
 
     private void OnAbs() {
         if (Program.Count < 1) throw new InvalidStackOperation("Cannot perform operation on a stack with less than 1 value");
+        if (IsCondition()) return;
 
         var a = Program.Pop();
         Program.Push(Math.Abs(a));
@@ -127,17 +153,22 @@ internal class Interpreter {
 
     private void OnNeg() {
         if (Program.Count < 1) throw new InvalidStackOperation("Cannot perform operation on a stack with less than 1 value");
+        if (IsCondition()) return;
 
         var a = Program.Pop();
         Program.Push(-a);
     }
 
     private void OnGoto() {
+        if (IsCondition()) return;
+
         var def = Defs.TryGetValue(Tokens[Current].Args[0], out int idx) ? idx : -1;
         if (def != -1) Current = idx;
     }
 
     private void OnHalt() {
+        if (IsCondition()) return;
+
         Environment.Exit(0);
     }
 
@@ -146,6 +177,19 @@ internal class Interpreter {
             if (Tokens[i].Type == TokenType.DEF)
                 Defs[Tokens[i].Args[0]] = i;
         }
+    }
+
+    private bool IsCondition() {
+        if (Tokens[Current].Args.Count < 2) return false;
+
+        var ifStmt = Tokens[Current].Args[0]; 
+        if (ifStmt != "if") throw new InvalidStackOperation("Expected 'if'");
+
+        if (Program.Count == 0) throw new InvalidStackOperation("Cannot evaluate 'if' expression on empty stack");
+
+        var a = Program.Peek();
+
+        return a != int.Parse(Tokens[Current].Args[1]);
     }
 
     public void Print() {

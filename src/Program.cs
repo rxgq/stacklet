@@ -17,7 +17,7 @@ internal abstract class Program
         var lexer = new Lexer(source);
         var tokens = lexer.Tokenize();
 
-        //lexer.Print();
+        lexer.Print();
 
         var program = new Interpreter(tokens);
         program.Interpret();

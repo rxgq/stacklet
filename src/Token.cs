@@ -27,6 +27,7 @@ public enum TokenType {
     FREE,
     ROTATE,
     SIZE,
+    DUMP,
 
     ADD,
     SUB,
@@ -42,6 +43,8 @@ public enum TokenType {
     NOP,
     READ,
     HALT,
+
+    IF,
 
     EOF,
     BAD,

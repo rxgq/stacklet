@@ -5,7 +5,7 @@ def calc
   read
 
   add
-  
+
   out "Result: "
   out
 
