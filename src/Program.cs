@@ -32,13 +32,25 @@ internal abstract class Program
                 {"add", "arithmetic"},
                 {"sub", "arithmetic"},
                 {"mul", "arithmetic"},
-                {"div", "arithmetic"}
+                {"div", "arithmetic"},
+                {"mod", "arithmetic"},
+                {"neg", "arithmetic"},
+                {"abs", "arithmetic"},
+                {"push", "stack"},
+                {"drop", "stack"},
+                {"dupe", "stack"},
+                {"swap", "stack"},
+                {"size", "stack"},
+                {"spin", "stack"},
+                {"free", "stack"},
             };
 
             foreach (var test in tests) {
                 var path = $"tests/{test.Value}/{test.Key}_test.txt";
 
                 var source = File.ReadAllLines(path);
+                Console.Write($"{test.Key}: ");
+    
                 Execute(source);
             }
         }

@@ -27,7 +27,6 @@ public enum TokenType {
     FREE,
     SPIN,
     SIZE,
-    DUMP,
 
     ADD,
     SUB,
@@ -43,6 +42,7 @@ public enum TokenType {
     NOP,
     READ,
     HALT,
+    DUMP,
 
     IF,
 

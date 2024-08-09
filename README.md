@@ -1,11 +1,15 @@
-### Installation
+## Installation
 Clone latest version of Stacklet from the repository and run it in your terminal.
 
-### Syntax
+## Syntax
 Stacklet commands are typically written as `command arg1`, with each command operating on a stack. Commands and arguments are separated by spaces.
 
 
+<br>
+<br>
+<br>
 
+## Documentation
 
 ### Arithmetic
 <hr>
@@ -55,3 +59,146 @@ Stacklet commands are typically written as `command arg1`, with each command ope
   push 6
   div      // Stack now contains 6
   ```
+
+<br>
+
+**MOD**
+- **Description**: Divides the top stack element by the second-to-top element and returns the remainder.
+- **Syntax**: `mod`
+  
+  ```
+  push 11
+  push 7
+  mod      // Stack now contains 4
+  ```
+
+<br>
+
+**NEG**
+- **Description**: Reverses the sign of the top stack element.
+- **Syntax**: `neg`
+  
+  ```
+  push 5
+  neg      // Stack now contains -5
+  ```
+
+<br>
+
+**ABS**
+- **Description**: Replaces the top element of the stack with its absolute value.
+- **Syntax**: `abs`
+  
+  ```
+  push -14
+  abs      // Stack now contains 14
+  ```
+
+
+### Stack Operations
+<hr>
+
+
+**PUSH**
+- **Description**: Pushes a value to the top of the stack.
+- **Syntax**: `push`
+  
+  ```
+  push 10
+  out     // Stack now contains 10
+  ```
+
+<br>
+
+**DROP**
+- **Description**: Drops the value at the top of the stack.
+- **Syntax**: `drop`
+  
+  ```
+  push 5
+  push 10
+
+  drop
+
+  out     // Stack now contains 5
+  ```
+
+<br>
+
+**DUPE**
+- **Description**: Duplicates the value at the top of the stack.
+- **Syntax**: `dupe`
+  
+  ```
+  push 5
+  dupe
+
+  out     // Stack now contains (5, 5)
+  ```
+
+<br>
+
+**SWAP**
+- **Description**: Swapes the value at the top of the stack with the second-to-top value.
+- **Syntax**: `swap`
+  
+  ```
+  push 4
+  push 8
+  swap
+
+  out     // Stack now contains (8, 4)
+  ```
+
+<br>
+
+**SIZE**
+- **Description**: Gets the current stack size and pushes to the top of the stack.
+- **Syntax**: `size`
+  
+  ```
+  push 1
+  push 2
+  push 8
+
+  size
+
+  out     // Stack now contains 3
+  ```
+
+<br>
+
+
+**SPIN**
+- **Description**: Reverses the order of the stack elements
+- **Syntax**: `spin`
+  
+  ```
+  push 1
+  push 2
+  push 3
+
+  spin
+
+  out     // Stack now contains (3, 2, 1)
+  ```
+
+<br>
+
+
+**FREE**
+- **Description**: Clears the stack contents
+- **Syntax**: `free`
+  
+  ```
+  push 5
+  push 3
+  push 17
+
+  free
+
+  push 1
+  out      // Stack now contains 1
+  ```
+
+<br>

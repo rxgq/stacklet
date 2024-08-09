@@ -100,8 +100,6 @@ internal class Interpreter {
         if (Program.Count < 1 && Tokens[Current].Args.Count == 0) throw new InvalidStackOperation("Cannot perform out on an empty stack");
         if (IsCondition()) return;
 
-        Thread.Sleep(400);
-
         if (Tokens[Current].Args.Count == 1) {
             Console.WriteLine(Tokens[Current].Args[0]);
             return;

@@ -1,0 +1,8 @@
+push 5
+push 3
+push 17
+
+free
+
+push 1
+out

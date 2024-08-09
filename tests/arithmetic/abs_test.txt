@@ -1,0 +1,4 @@
+push -14
+abs
+
+out
