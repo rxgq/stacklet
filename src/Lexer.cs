@@ -32,7 +32,6 @@ internal class Lexer {
             "free"   => new(command, TokenType.FREE, Args()),
             "spin"   => new(command, TokenType.SPIN, Args()),
             "size"   => new(command, TokenType.SIZE, Args()),
-            "dump"   => new(command, TokenType.DUMP, Args()),
 
             "add"    => new(command, TokenType.ADD, Args()),
             "sub"    => new(command, TokenType.SUB, Args()),
@@ -42,13 +41,16 @@ internal class Lexer {
             "neg"    => new(command, TokenType.NEG, Args()),
             "abs"    => new(command, TokenType.ABS, Args()),
 
-            "def"    => new(command, TokenType.DEF, Args()),
-            "goto"   => new(command, TokenType.GOTO, Args()),
             "out"    => new(command, TokenType.OUT, Args()),
             "nop"    => new(command, TokenType.NOP, Args()),
             "read"   => new(command, TokenType.READ, Args()),
-            "halt"   => new(command, TokenType.HALT, Args()),
+            "dump"   => new(command, TokenType.DUMP, Args()),
+            "wait"   => new(command, TokenType.WAIT, Args()),
 
+            "def"    => new(command, TokenType.DEF, Args()),
+            "goto"   => new(command, TokenType.GOTO, Args()),
+            "halt"   => new(command, TokenType.HALT, Args()),
+            
             ""       => new("", TokenType.SPACE),
             _        => new(command, TokenType.BAD),
         };

@@ -28,7 +28,7 @@ public enum TokenType {
     MOD,
     NEG,
     ABS,
-    
+
     // MAX
 
     // MIN
@@ -46,16 +46,16 @@ public enum TokenType {
 
     // misc
     OUT,
-    GOTO,
     NOP,
     READ,
-    HALT,
     DUMP,
+    WAIT,
 
 
     // control flow
-    IF,
     DEF,
+    GOTO,
+    HALT,
 
 
     // etc

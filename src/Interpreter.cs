@@ -26,7 +26,6 @@ internal class Interpreter {
             case TokenType.SPIN: OnSpin(); break;
             case TokenType.SIZE: OnSize(); break;
             case TokenType.DUMP: OnDump(); break;
-
             case TokenType.ADD: OnOp(); break;
             case TokenType.SUB: OnOp(); break;
             case TokenType.MUL: OnOp(); break;
@@ -34,12 +33,11 @@ internal class Interpreter {
             case TokenType.MOD: OnOp(); break;
             case TokenType.ABS: OnAbs(); break;
             case TokenType.NEG: OnNeg(); break;
-
             case TokenType.OUT: OnOut(); break;
             case TokenType.READ: OnRead(); break;
             case TokenType.GOTO: OnGoto(); break;
             case TokenType.HALT: OnHalt(); break;
-
+            case TokenType.WAIT: OnWait(); break;
             case TokenType.BAD: throw new InvalidStackOperation($"Invalid command '{Tokens[Current].Value}'");
         }
     }
@@ -128,6 +126,11 @@ internal class Interpreter {
             Console.Write($"{stackArray[i]} ");
 
         Console.WriteLine();
+    }
+
+    private void OnWait() {
+        var secs = int.Parse(Tokens[Current].Args[0]) * 1000;
+        Thread.Sleep(secs);
     }
 
     private void OnOp() {
