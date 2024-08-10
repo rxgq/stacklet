@@ -1,3 +1,5 @@
+namespace stacklet;
+
 internal class Token {
 
     public string Value { get; set; }
@@ -14,8 +16,8 @@ internal class Token {
 
     public override string ToString()
     {
-        string argsFormatted = Args.Count > 0 ? $"[{string.Join(", ", Args)}]" : string.Empty;
-        return $"{Type} {Value} {argsFormatted}\n";
+        string args = Args.Count > 0 ? $"[{string.Join(", ", Args)}]" : string.Empty;
+        return $"{Type, -8} {Value, -4} {args}\n";
     }
 }
 
@@ -28,10 +30,8 @@ public enum TokenType {
     MOD,
     NEG,
     ABS,
-
-    // MAX
-
-    // MIN
+    MAX,
+    MIN,
 
 
     // stack

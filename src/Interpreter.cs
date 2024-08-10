@@ -1,3 +1,5 @@
+namespace stacklet;
+
 internal class Interpreter {
     private List<Token> Tokens { get; set; }
     private int Current { get; set; }
@@ -33,6 +35,8 @@ internal class Interpreter {
             case TokenType.MOD: OnOp(); break;
             case TokenType.ABS: OnAbs(); break;
             case TokenType.NEG: OnNeg(); break;
+            case TokenType.MAX: OnOp(); break;
+            case TokenType.MIN: OnOp(); break;
             case TokenType.OUT: OnOut(); break;
             case TokenType.READ: OnRead(); break;
             case TokenType.GOTO: OnGoto(); break;
@@ -146,6 +150,8 @@ internal class Interpreter {
             case TokenType.MUL: Program.Push(a * b); break;
             case TokenType.DIV: Program.Push(a / b); break;
             case TokenType.MOD: Program.Push(a % b); break;
+            case TokenType.MAX: Program.Push(Math.Max(a, b)); break;
+            case TokenType.MIN: Program.Push(Math.Min(a, b)); break;
         }
     }
 
@@ -174,7 +180,6 @@ internal class Interpreter {
 
     private void OnHalt() {
         if (IsCondition()) return;
-
         IsHalted = true;
     }
 
@@ -186,10 +191,8 @@ internal class Interpreter {
     }
 
     private bool IsCondition() {
-
-        // the program will always try to evaluate an if statement regardless of whether it finds a conditional keyword
-        // this line prevents it from actually executing the code
-        // it returns false to signify a pseudo-result: "false" evaluating the conditional to true, therefore executing the statement
+        // the program always checks for an if statement, if args < 2 then there cannot be a conditional
+        // if there are 2 or more, then it *must* be a conditional
         if (Tokens[Current].Args.Count < 2) return false;
         
         if (Program.Count == 0) throw new InvalidStackOperation("Cannot evaluate 'if' or 'ifnt' expression on empty stack");
@@ -199,7 +202,6 @@ internal class Interpreter {
         if (ifIndex == -1) throw new InvalidStackOperation("Expected 'if' or 'ifnt'");
 
         if (Tokens[Current].Args.Count != ifIndex + 2) throw new InvalidStackOperation("Expected a condition after 'if' or 'ifnt'");
-
 
         var ifStmt = Tokens[Current].Args[ifIndex].ToLower();
         if (ifStmt != "if" && ifStmt != "ifnt") throw new InvalidStackOperation("Expected 'if' or 'ifnt'");
@@ -213,7 +215,7 @@ internal class Interpreter {
     public void Print() {
         Console.Write("\n======= PROGRAM =======");
         foreach (var def in Defs)
-            Console.Write($"\nDEF: {def.Key} => index: {def.Value}");
+            Console.Write($"\nDEF: {def.Key, -8} => index: {def.Value}");
 
         Console.WriteLine("\n");
     }

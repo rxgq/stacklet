@@ -6,9 +6,5 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="src\fib.txt" />
-  </ItemGroup>
-
+  
 </Project>

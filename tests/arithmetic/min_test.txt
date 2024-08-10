@@ -1,0 +1,6 @@
+push 3
+push 8
+
+min
+
+out

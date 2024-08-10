@@ -1,3 +1,5 @@
+namespace stacklet;
+
 internal class StackUnderflow : Exception {
     public StackUnderflow(string message) : base(message) {
 

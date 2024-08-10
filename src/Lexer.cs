@@ -1,3 +1,5 @@
+namespace stacklet;
+
 internal class Lexer {
     private string[] Source { get; set; }
     private List<Token> Tokens { get; set; } = new();
@@ -40,6 +42,8 @@ internal class Lexer {
             "mod"    => new(command, TokenType.MOD, Args()),
             "neg"    => new(command, TokenType.NEG, Args()),
             "abs"    => new(command, TokenType.ABS, Args()),
+            "max"    => new(command, TokenType.MAX, Args()),
+            "min"    => new(command, TokenType.MIN, Args()),
 
             "out"    => new(command, TokenType.OUT, Args()),
             "nop"    => new(command, TokenType.NOP, Args()),
