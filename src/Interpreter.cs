@@ -13,12 +13,15 @@ internal class Interpreter {
     }
 
     public void Interpret() {
-        for (; Tokens[Current].Type != TokenType.EOF && !IsHalted; Current++) {
+        while (Tokens[Current].Type != TokenType.EOF && !IsHalted) {
             Execute();
+            Current++;
         }
     }
 
     private void Execute() {
+        if (IsCondition()) return;
+
         switch (Tokens[Current].Type) {
             case TokenType.PUSH: OnPush(); break;
             case TokenType.DROP: OnDrop(); break;
@@ -47,21 +50,22 @@ internal class Interpreter {
     }
 
     private void OnPush() {
-        if (IsCondition()) return;
+        if (Tokens[Current].Args.Count < 1) throw new InvalidStackOperation("Push expects at least one argument");
 
-        Program.Push(int.Parse(Tokens[Current].Args[0]));
+        var isInt = int.TryParse(Tokens[Current].Args[0], out int num);
+        if (!isInt) throw new InvalidStackOperation("Attempted to push a non-integer value onto the stack");
+
+        Program.Push(num);
     }
 
     private void OnDrop() {
         if (Program.Count < 1) throw new StackUnderflow("Cannot drop from an empty stack");
-        if (IsCondition()) return;
 
         Program.Pop();
     }
 
     private void OnDupe() {
         if (Program.Count < 1) throw new InvalidStackOperation("Cannot dupe a value from an empty stack");
-        if (IsCondition()) return;
 
         var a = Program.Peek();
         Program.Push(a);
@@ -69,7 +73,6 @@ internal class Interpreter {
 
     private void OnSwap() {
         if (Program.Count < 2) throw new InvalidStackOperation($"Cannot swap on a stack with less than 2 values");
-        if (IsCondition()) return;
 
         var a = Program.Pop();
         var b = Program.Pop();
@@ -79,13 +82,10 @@ internal class Interpreter {
     }
 
     private void OnFree() {
-        if (IsCondition()) return;
         Program.Clear();
     }
 
     private void OnSpin() {
-        if (IsCondition()) return;
-
         var rev = new Stack<int>();
 
         while (Program.Count != 0)
@@ -95,13 +95,11 @@ internal class Interpreter {
     }
 
     private void OnSize() {
-        if (IsCondition()) return;
         Program.Push(Program.Count); 
     }
 
     private void OnOut() {
         if (Program.Count < 1 && Tokens[Current].Args.Count == 0) throw new InvalidStackOperation("Cannot perform out on an empty stack");
-        if (IsCondition()) return;
 
         if (Tokens[Current].Args.Count == 1) {
             Console.WriteLine(Tokens[Current].Args[0]);
@@ -112,18 +110,17 @@ internal class Interpreter {
     }
 
     private void OnRead() {
-        if (IsCondition()) return;
-
         var a = Console.ReadLine();
         if (string.IsNullOrWhiteSpace(a)) 
             return;
 
-        Program.Push(int.Parse(a));
+        var isInt = int.TryParse(a, out int val);
+        if (!isInt) throw new InvalidStackOperation("Attempted to read a non-integer value into the stack");
+
+        Program.Push(val);
     }
 
     private void OnDump() {
-        if (IsCondition()) return;
-
         Console.Write("STACK: ");
         var stackArray = Program.ToArray();
         for (int i = stackArray.Length - 1; i >= 0; i--)
@@ -133,13 +130,14 @@ internal class Interpreter {
     }
 
     private void OnWait() {
-        var secs = int.Parse(Tokens[Current].Args[0]) * 1000;
-        Thread.Sleep(secs);
+        var isInt = int.TryParse(Tokens[Current].Args[0], out int secs);
+        if (!isInt) throw new InvalidStackOperation("Attempted to call wait with a non-integer value");
+
+        Thread.Sleep(secs * 1000);
     }
 
     private void OnOp() {
         if (Program.Count < 2) throw new InvalidStackOperation($"Cannot perform operation on a stack with less than 2 values");
-        if (IsCondition()) return;
 
         var b = Program.Pop();
         var a = Program.Pop();
@@ -157,7 +155,6 @@ internal class Interpreter {
 
     private void OnAbs() {
         if (Program.Count < 1) throw new InvalidStackOperation("Cannot perform operation on a stack with less than 1 value");
-        if (IsCondition()) return;
 
         var a = Program.Pop();
         Program.Push(Math.Abs(a));
@@ -165,26 +162,25 @@ internal class Interpreter {
 
     private void OnNeg() {
         if (Program.Count < 1) throw new InvalidStackOperation("Cannot perform operation on a stack with less than 1 value");
-        if (IsCondition()) return;
 
         var a = Program.Pop();
         Program.Push(-a);
     }
 
     private void OnGoto() {
-        if (IsCondition()) return;
-
         var def = Defs.TryGetValue(Tokens[Current].Args[0], out int idx) ? idx : -1;
-        if (def != -1) Current = idx;
+        if (def == -1) throw new InvalidStackOperation($"Undefined reference to '{Tokens[Current].Args[0]}' in goto statement");
+
+        Current = idx;
     }
 
     private void OnHalt() {
-        if (IsCondition()) return;
         IsHalted = true;
     }
 
     private void MapDefs() {
         for (int i = 0; i < Tokens.Count; i++) {
+
             if (Tokens[i].Type == TokenType.DEF)
                 Defs[Tokens[i].Args[0]] = i;
         }
