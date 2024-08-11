@@ -351,7 +351,7 @@ Program that infinitely outputs the fibonacci sequence
 - **Syntax**: `wait`
   
   ```
-  dpush 10
+  push 10
   wait 1      // waits for 1 second
 
   out
