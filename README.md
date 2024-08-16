@@ -55,10 +55,34 @@ Program that infinitely outputs the fibonacci sequence
 ```
 
 <br>
-<br>
-<br>
 
 ## Documentation
+
+### Control flow
+<hr>
+
+The `if` statement takes in one parameter and looks at the top element in the stack. If the element at the top of the stack is the same as the parameter, the statement will execute. You can also substitute the `if` for `ifnt` (i know) and it will execute if the top element is _not_ equal to the parameter.
+
+```
+def main
+  push 1
+  goto main if 1     // will execute the goto
+```
+
+This can be applied to any statement, for instance:
+
+```
+push 1 if 5
+drop ifnt 2
+size if -5
+wait 5 ifnt 10
+
+...
+
+etc
+
+```
+
 
 ### Arithmetic
 <hr>
